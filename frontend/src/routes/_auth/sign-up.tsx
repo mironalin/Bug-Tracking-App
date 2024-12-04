@@ -1,4 +1,5 @@
 import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
 import { createFileRoute } from "@tanstack/react-router";
 
 export const Route = createFileRoute("/_auth/sign-up")({
@@ -8,6 +9,7 @@ export const Route = createFileRoute("/_auth/sign-up")({
 function SignUp() {
   return (
     <div>
+      <Input />
       <Button variant="primary">Primary</Button>
       <Button variant="secondary">Secondary</Button>
       <Button variant="destructive">Destructive</Button>
