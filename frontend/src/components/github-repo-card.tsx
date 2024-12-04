@@ -59,7 +59,7 @@ export function GithubRepoCard({ repo }: GithubRepoCardProps) {
             Fork
           </Button>
         </div>
-        <Button variant="default" size="sm" asChild>
+        <Button variant="primary" size="sm" asChild>
           <a href={repo.repositoryUrl} target="_blank" rel="noopener noreferrer">
             View Repository
           </a>
