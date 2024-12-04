@@ -1,6 +1,8 @@
 import { GithubRepoCard } from "@/components/github-repo-card";
 import { ScrollArea } from "@radix-ui/react-scroll-area";
 import { useEffect, useState } from "react";
+import { api } from "@/lib/api";
+
 function App() {
   interface Project {
     id: number;
@@ -15,7 +17,7 @@ function App() {
 
   useEffect(() => {
     async function fetchProjects() {
-      const res = await fetch("http://localhost:3000/api/projects");
+      const res = await api.projects.$get();
       const data = await res.json();
       setProjects(data.projects);
     }

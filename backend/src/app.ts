@@ -6,6 +6,7 @@ const app = new Hono();
 
 app.use("*", logger());
 
-app.route("/api/projects", projectsRoute);
+const apiRoutes = app.basePath("/api").route("/projects", projectsRoute);
 
 export default app;
+export type ApiRoutes = typeof apiRoutes;
