@@ -1,3 +1,9 @@
+import { createFileRoute } from "@tanstack/react-router";
+
+export const Route = createFileRoute("/")({
+  component: Index,
+});
+
 import { GithubRepoCard } from "@/components/github-repo-card";
 import { ScrollArea } from "@radix-ui/react-scroll-area";
 import { api } from "@/lib/api";
@@ -11,7 +17,7 @@ async function fetchProjects() {
   return await res.json();
 }
 
-function App() {
+function Index() {
   const { isPending, error, data } = useQuery({
     queryKey: ["projects"],
     queryFn: fetchProjects,
@@ -36,5 +42,3 @@ function App() {
     </main>
   );
 }
-
-export default App;
