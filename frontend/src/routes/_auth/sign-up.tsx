@@ -1,5 +1,6 @@
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { Select, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { createFileRoute } from "@tanstack/react-router";
 
 export const Route = createFileRoute("/_auth/sign-up")({
@@ -9,6 +10,11 @@ export const Route = createFileRoute("/_auth/sign-up")({
 function SignUp() {
   return (
     <div>
+      <Select>
+        <SelectTrigger>
+          <SelectValue placeholder="Select a fruit" />
+        </SelectTrigger>
+      </Select>
       <Input />
       <Button variant="primary">Primary</Button>
       <Button variant="secondary">Secondary</Button>
