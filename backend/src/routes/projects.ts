@@ -1,4 +1,5 @@
 import { Hono } from "hono";
+import { auth } from "../lib/auth.js";
 import { z } from "zod";
 import { zValidator } from "@hono/zod-validator";
 
@@ -58,16 +59,40 @@ const fakeProjects: Project[] = [
   },
 ];
 
-export const projectsRoute = new Hono()
+export const projectsRoute = new Hono<{
+  Variables: {
+    user: typeof auth.$Infer.Session.user | null;
+    session: typeof auth.$Infer.Session.session | null;
+  };
+}>()
+  .use("*", async (c, next) => {
+    const session = await auth.api.getSession({ headers: c.req.raw.headers });
+
+    if (!session) {
+      c.set("user", null);
+      c.set("session", null);
+      return next();
+    }
+
+    c.set("user", session.user);
+    c.set("session", session.session);
+    return next();
+  })
   .get("/", (c) => {
+    const user = c.get("user");
+    if (!user) return c.body(null, 401);
     return c.json({ projects: fakeProjects });
   })
   .post("/", zValidator("json", createPostSchema), async (c) => {
+    const user = c.get("user");
+    if (!user) return c.body(null, 401);
     const project = await c.req.valid("json");
     fakeProjects.push({ id: fakeProjects.length + 1, ...project });
     return c.json(project);
   })
   .get("/:id{[0-9]+}", (c) => {
+    const user = c.get("user");
+    if (!user) return c.body(null, 401);
     const id = Number.parseInt(c.req.param("id"));
     const project = fakeProjects.find((project) => project.id === id);
     if (!project) {
@@ -76,6 +101,8 @@ export const projectsRoute = new Hono()
     return c.json({ project });
   })
   .delete("/:id{[0-9]+}", (c) => {
+    const user = c.get("user");
+    if (!user) return c.body(null, 401);
     const id = Number.parseInt(c.req.param("id"));
     const index = fakeProjects.findIndex((project) => project.id === id);
     if (index === -1) {
