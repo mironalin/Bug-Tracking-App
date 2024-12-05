@@ -1,3 +1,4 @@
+import { SignInCard } from "@/features/auth/components/sign-in-card";
 import { createFileRoute } from "@tanstack/react-router";
 
 export const Route = createFileRoute("/_auth/sign-in")({
@@ -5,5 +6,5 @@ export const Route = createFileRoute("/_auth/sign-in")({
 });
 
 function SignIn() {
-  return <div>Hello "/_auth/sign-in"!</div>;
+  return <SignInCard />;
 }
