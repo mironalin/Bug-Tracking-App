@@ -5,7 +5,7 @@ import { toast } from "sonner";
 import { useState } from "react";
 import { z } from "zod";
 
-import { Link, redirect, useNavigate } from "@tanstack/react-router";
+import { Link, useNavigate } from "@tanstack/react-router";
 import { DottedSeparator } from "@/components/dotted-separator";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Button } from "@/components/ui/button";
