@@ -2,6 +2,7 @@ import { SignOutButton } from "@/components/signout-button";
 import { Button } from "@/components/ui/button";
 import { authClient } from "@/lib/auth-client";
 import { Link } from "@tanstack/react-router";
+import { UserButton } from "../auth/components/user-button";
 
 export function Navbar() {
   const { data: session } = authClient.useSession();
@@ -13,7 +14,7 @@ export function Navbar() {
           <>
             <h1>Hello, {session.user.name}</h1>
             <div className="flex items-center gap-2">
-              <SignOutButton />
+              <UserButton />
             </div>
           </>
         ) : (
