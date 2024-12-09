@@ -4,8 +4,9 @@ import { Toaster } from "@/components/ui/sonner";
 import { userQueryOptions } from "@/lib/api";
 export const Route = createFileRoute("/_authenticated")({
   beforeLoad: async ({ context }) => {
-    const auth = await context.auth;
-    if (!auth.data?.session) {
+    const queryClient = context.queryClient;
+    const data = await queryClient.fetchQuery(userQueryOptions);
+    if (!data.session) {
       throw redirect({ to: "/sign-in" });
     }
   },

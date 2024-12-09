@@ -6,7 +6,7 @@ import { useEffect, useState } from "react";
 import { z } from "zod";
 
 import { zodResolver } from "@hookform/resolvers/zod";
-import { DottetSeparator } from "@/components/dotted-separator";
+import { DottedSeparator } from "@/components/dotted-separator";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
@@ -64,9 +64,6 @@ export const SignUpCard = () => {
         onRequest: () => {
           setPending(true);
         },
-        onSuccess: () => {
-          redirect({ to: "/" });
-        },
         onError: (ctx: ErrorContext) => {
           setPending(false);
           toast.error(ctx.error.message + "!");
@@ -97,7 +94,7 @@ export const SignUpCard = () => {
         </CardDescription>
       </CardHeader>
       <div className="px-7">
-        <DottetSeparator />
+        <DottedSeparator />
       </div>
       <CardContent className="p-7">
         <Form {...form}>
@@ -148,7 +145,7 @@ export const SignUpCard = () => {
         </Form>
       </CardContent>
       <div className="px-7">
-        <DottetSeparator />
+        <DottedSeparator />
       </div>
       <CardContent className="p-7 flex flex-col gap-y-4">
         <Button disabled={pending} variant="secondary" size="lg" className="w-full">
@@ -161,7 +158,7 @@ export const SignUpCard = () => {
         </Button>
       </CardContent>
       <div className="px-7">
-        <DottetSeparator />
+        <DottedSeparator />
       </div>
       <CardContent className="p-7 flex items-center justify-center">
         <p>

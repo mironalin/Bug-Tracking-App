@@ -1,15 +1,14 @@
-import { StrictMode, useEffect } from "react";
+import { StrictMode } from "react";
 import { createRoot } from "react-dom/client";
 import { routeTree } from "./routeTree.gen";
 import "./index.css";
 
 import { RouterProvider, createRouter } from "@tanstack/react-router";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { AuthContext, useSession } from "./lib/auth-client";
 
 const queryClient = new QueryClient();
 
-const router = createRouter({ routeTree, context: { auth: undefined! } });
+const router = createRouter({ routeTree, context: { queryClient } });
 
 declare module "@tanstack/react-router" {
   interface Register {
@@ -17,18 +16,8 @@ declare module "@tanstack/react-router" {
   }
 }
 
-let resolveAuthClient: (client: AuthContext) => void;
-export const authSession: Promise<AuthContext> = new Promise((resolve) => {
-  resolveAuthClient = resolve;
-});
-
 function App() {
-  const auth = useSession();
-  useEffect(() => {
-    if (auth.isPending) return;
-    resolveAuthClient(auth);
-  }, [auth, auth.isPending]);
-  return <RouterProvider router={router} context={{ auth: authSession }} />;
+  return <RouterProvider router={router} context={{ queryClient }} />;
 }
 
 createRoot(document.getElementById("root")!).render(

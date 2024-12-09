@@ -2,14 +2,12 @@ import { Button } from "@/components/ui/button";
 import { createFileRoute, Link, Outlet, redirect, useLocation } from "@tanstack/react-router";
 import { Toaster } from "@/components/ui/sonner";
 import { userQueryOptions } from "@/lib/api";
-import { useSession } from "@/lib/auth-client";
 
 export const Route = createFileRoute("/_authPages")({
   beforeLoad: async ({ context }) => {
-    const auth = await context.auth;
-    // console.log(auth.isPending);
-    if (auth.data?.session) {
-      // console.log(auth.data.user);
+    const queryClient = context.queryClient;
+    const data = await queryClient.fetchQuery(userQueryOptions);
+    if (data.session) {
       throw redirect({ to: "/" });
     }
   },

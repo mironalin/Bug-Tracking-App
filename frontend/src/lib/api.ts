@@ -17,7 +17,7 @@ const client = hc<ApiRoutes>("http://localhost:3000", {
 
 export const api = client.api;
 
-async function getCurrentUser() {
+async function getCurrentSession() {
   const res = await api.me.$get();
   if (!res.ok) {
     throw new Error("Server error");
@@ -27,7 +27,6 @@ async function getCurrentUser() {
 }
 
 export const userQueryOptions = queryOptions({
-  queryKey: ["get-current-user"],
-  queryFn: getCurrentUser,
-  staleTime: Infinity,
+  queryKey: ["get-current-Session"],
+  queryFn: getCurrentSession,
 });

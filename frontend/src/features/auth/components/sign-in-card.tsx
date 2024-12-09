@@ -6,7 +6,7 @@ import { useState } from "react";
 import { z } from "zod";
 
 import { Link, redirect, useNavigate } from "@tanstack/react-router";
-import { DottetSeparator } from "@/components/dotted-separator";
+import { DottedSeparator } from "@/components/dotted-separator";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -21,6 +21,7 @@ const formSchema = z.object({
 });
 
 export const SignInCard = () => {
+  const navigate = useNavigate();
   const [pending, setPending] = useState(false);
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -41,7 +42,8 @@ export const SignInCard = () => {
           setPending(true);
         },
         onSuccess: () => {
-          window.location.reload();
+          // window.location.reload();
+          navigate({ to: "/" });
         },
         onError: (ctx: ErrorContext) => {
           setPending(false);
@@ -74,7 +76,7 @@ export const SignInCard = () => {
         <CardTitle className="text-2xl">Welcome back!</CardTitle>
       </CardHeader>
       <div className="px-7">
-        <DottetSeparator />
+        <DottedSeparator />
       </div>
       <CardContent className="p-7">
         <Form {...form}>
@@ -113,7 +115,7 @@ export const SignInCard = () => {
         </Form>
       </CardContent>
       <div className="px-7">
-        <DottetSeparator />
+        <DottedSeparator />
       </div>
       <CardContent className="p-7 flex flex-col gap-y-4">
         <Button disabled={pending} variant="secondary" size="lg" className="w-full">
@@ -126,7 +128,7 @@ export const SignInCard = () => {
         </Button>
       </CardContent>
       <div className="px-7">
-        <DottetSeparator />
+        <DottedSeparator />
       </div>
       <CardContent className="p-7 flex items-center justify-center">
         <p>
