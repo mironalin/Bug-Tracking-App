@@ -4,6 +4,7 @@ import { projectsRoute } from "./routes/projects.js";
 import { authRoute } from "./routes/auth.js";
 import { meRoute } from "./routes/me.js";
 import { auth } from "./lib/auth.js";
+import { workspacesRoute } from "./routes/workspaces.js";
 
 const app = new Hono();
 
@@ -23,7 +24,8 @@ const apiRoutes = app
   .basePath("/api")
   .route("/projects", projectsRoute)
   .route("/auth/**", authRoute)
-  .route("/me", meRoute);
+  .route("/me", meRoute)
+  .route("/workspaces", workspacesRoute);
 
 export default app;
 export type ApiRoutes = typeof apiRoutes;
