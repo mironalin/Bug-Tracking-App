@@ -1,8 +1,19 @@
 import { Button } from "@/components/ui/button";
-import { createFileRoute, Link, Outlet, useLocation } from "@tanstack/react-router";
+import { createFileRoute, Link, Outlet, redirect, useLocation } from "@tanstack/react-router";
 import { Toaster } from "@/components/ui/sonner";
+import { userQueryOptions } from "@/lib/api";
+import { useSession } from "@/lib/auth-client";
 
-export const Route = createFileRoute("/_auth")({
+export const Route = createFileRoute("/_authPages")({
+  beforeLoad: async ({ context }) => {
+    const auth = await context.auth;
+    // console.log(auth.isPending);
+    if (auth.data?.session) {
+      // console.log(auth.data.user);
+      throw redirect({ to: "/" });
+    }
+  },
+
   component: RouteComponent,
 });
 
@@ -12,8 +23,6 @@ function RouteComponent() {
   });
 
   const isSignIn = pathname === "/sign-in";
-
-  console.log(pathname);
   return (
     <main className="bg-neutral-100 min-h-screen">
       <div className="mx-auto max-w-screen-2xl p-4">

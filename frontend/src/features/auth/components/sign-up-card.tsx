@@ -10,7 +10,7 @@ import { DottetSeparator } from "@/components/dotted-separator";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
-import { Link, useNavigate } from "@tanstack/react-router";
+import { Link, redirect, useNavigate } from "@tanstack/react-router";
 import { Form, FormControl, FormField, FormItem, FormMessage } from "@/components/ui/form";
 import { authClient } from "@/lib/auth-client";
 import { ErrorContext } from "@better-fetch/fetch";
@@ -48,17 +48,11 @@ export const SignUpCard = () => {
           navigate({ to: "/sign-in" });
         },
         onError: (ctx) => {
-          // if (ctx.response.status === 422) {
-          //   toast.error("An account with this email already exits!");
-          // }
-          // if (ctx.response.status === 500) {
-          //   toast.error("Internal server error!");
-          // }
+          setPending(false);
           toast.error(ctx.error.message + "!");
         },
       }
     );
-    setPending(false);
   };
 
   const handleSignInWithGithub = async () => {
@@ -70,13 +64,15 @@ export const SignUpCard = () => {
         onRequest: () => {
           setPending(true);
         },
-        onSuccess: () => {},
+        onSuccess: () => {
+          redirect({ to: "/" });
+        },
         onError: (ctx: ErrorContext) => {
+          setPending(false);
           toast.error(ctx.error.message + "!");
         },
       }
     );
-    setPending(false);
   };
 
   useEffect(() => {

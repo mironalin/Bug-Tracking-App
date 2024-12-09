@@ -1,27 +1,25 @@
-import { authClient } from "@/lib/auth-client";
+import { signOut } from "@/lib/auth-client";
 import { useState } from "react";
-import { useNavigate } from "@tanstack/react-router";
 import { toast } from "sonner";
 import { Button } from "./ui/button";
+import { ErrorContext } from "@better-fetch/fetch";
 
 export const SignOutButton = () => {
   const [pending, setPending] = useState(false);
-  const navigate = useNavigate();
+
   const handleSignOut = async () => {
-    try {
-      setPending(true);
-      await authClient.signOut({
-        fetchOptions: {
-          onSuccess: () => {
-            navigate({ to: "/sign-in" });
-          },
+    setPending(true);
+    await signOut({
+      fetchOptions: {
+        onSuccess: () => {
+          window.location.reload();
         },
-      });
-    } catch (error) {
-      toast.error("Error signing out: " + error);
-    } finally {
-      setPending(false);
-    }
+        onError: (ctx: ErrorContext) => {
+          setPending(false);
+          toast.error(ctx.error.message + "!");
+        },
+      },
+    });
   };
 
   return (

@@ -11,133 +11,133 @@
 // Import Routes
 
 import { Route as rootRoute } from './routes/__root'
-import { Route as IndexRouteImport } from './routes/_index/route'
-import { Route as AuthRouteImport } from './routes/_auth/route'
-import { Route as IndexIndexImport } from './routes/_index/index'
-import { Route as AuthSignUpImport } from './routes/_auth/sign-up'
-import { Route as AuthSignInImport } from './routes/_auth/sign-in'
+import { Route as AuthenticatedImport } from './routes/_authenticated'
+import { Route as AuthPagesImport } from './routes/_authPages'
+import { Route as AuthenticatedIndexImport } from './routes/_authenticated/index'
+import { Route as AuthPagesSignUpImport } from './routes/_authPages/sign-up'
+import { Route as AuthPagesSignInImport } from './routes/_authPages/sign-in'
 
 // Create/Update Routes
 
-const IndexRouteRoute = IndexRouteImport.update({
-  id: '/_index',
+const AuthenticatedRoute = AuthenticatedImport.update({
+  id: '/_authenticated',
   getParentRoute: () => rootRoute,
 } as any)
 
-const AuthRouteRoute = AuthRouteImport.update({
-  id: '/_auth',
+const AuthPagesRoute = AuthPagesImport.update({
+  id: '/_authPages',
   getParentRoute: () => rootRoute,
 } as any)
 
-const IndexIndexRoute = IndexIndexImport.update({
+const AuthenticatedIndexRoute = AuthenticatedIndexImport.update({
   id: '/',
   path: '/',
-  getParentRoute: () => IndexRouteRoute,
+  getParentRoute: () => AuthenticatedRoute,
 } as any)
 
-const AuthSignUpRoute = AuthSignUpImport.update({
+const AuthPagesSignUpRoute = AuthPagesSignUpImport.update({
   id: '/sign-up',
   path: '/sign-up',
-  getParentRoute: () => AuthRouteRoute,
+  getParentRoute: () => AuthPagesRoute,
 } as any)
 
-const AuthSignInRoute = AuthSignInImport.update({
+const AuthPagesSignInRoute = AuthPagesSignInImport.update({
   id: '/sign-in',
   path: '/sign-in',
-  getParentRoute: () => AuthRouteRoute,
+  getParentRoute: () => AuthPagesRoute,
 } as any)
 
 // Populate the FileRoutesByPath interface
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
-    '/_auth': {
-      id: '/_auth'
+    '/_authPages': {
+      id: '/_authPages'
       path: ''
       fullPath: ''
-      preLoaderRoute: typeof AuthRouteImport
+      preLoaderRoute: typeof AuthPagesImport
       parentRoute: typeof rootRoute
     }
-    '/_index': {
-      id: '/_index'
+    '/_authenticated': {
+      id: '/_authenticated'
       path: ''
       fullPath: ''
-      preLoaderRoute: typeof IndexRouteImport
+      preLoaderRoute: typeof AuthenticatedImport
       parentRoute: typeof rootRoute
     }
-    '/_auth/sign-in': {
-      id: '/_auth/sign-in'
+    '/_authPages/sign-in': {
+      id: '/_authPages/sign-in'
       path: '/sign-in'
       fullPath: '/sign-in'
-      preLoaderRoute: typeof AuthSignInImport
-      parentRoute: typeof AuthRouteImport
+      preLoaderRoute: typeof AuthPagesSignInImport
+      parentRoute: typeof AuthPagesImport
     }
-    '/_auth/sign-up': {
-      id: '/_auth/sign-up'
+    '/_authPages/sign-up': {
+      id: '/_authPages/sign-up'
       path: '/sign-up'
       fullPath: '/sign-up'
-      preLoaderRoute: typeof AuthSignUpImport
-      parentRoute: typeof AuthRouteImport
+      preLoaderRoute: typeof AuthPagesSignUpImport
+      parentRoute: typeof AuthPagesImport
     }
-    '/_index/': {
-      id: '/_index/'
+    '/_authenticated/': {
+      id: '/_authenticated/'
       path: '/'
       fullPath: '/'
-      preLoaderRoute: typeof IndexIndexImport
-      parentRoute: typeof IndexRouteImport
+      preLoaderRoute: typeof AuthenticatedIndexImport
+      parentRoute: typeof AuthenticatedImport
     }
   }
 }
 
 // Create and export the route tree
 
-interface AuthRouteRouteChildren {
-  AuthSignInRoute: typeof AuthSignInRoute
-  AuthSignUpRoute: typeof AuthSignUpRoute
+interface AuthPagesRouteChildren {
+  AuthPagesSignInRoute: typeof AuthPagesSignInRoute
+  AuthPagesSignUpRoute: typeof AuthPagesSignUpRoute
 }
 
-const AuthRouteRouteChildren: AuthRouteRouteChildren = {
-  AuthSignInRoute: AuthSignInRoute,
-  AuthSignUpRoute: AuthSignUpRoute,
+const AuthPagesRouteChildren: AuthPagesRouteChildren = {
+  AuthPagesSignInRoute: AuthPagesSignInRoute,
+  AuthPagesSignUpRoute: AuthPagesSignUpRoute,
 }
 
-const AuthRouteRouteWithChildren = AuthRouteRoute._addFileChildren(
-  AuthRouteRouteChildren,
+const AuthPagesRouteWithChildren = AuthPagesRoute._addFileChildren(
+  AuthPagesRouteChildren,
 )
 
-interface IndexRouteRouteChildren {
-  IndexIndexRoute: typeof IndexIndexRoute
+interface AuthenticatedRouteChildren {
+  AuthenticatedIndexRoute: typeof AuthenticatedIndexRoute
 }
 
-const IndexRouteRouteChildren: IndexRouteRouteChildren = {
-  IndexIndexRoute: IndexIndexRoute,
+const AuthenticatedRouteChildren: AuthenticatedRouteChildren = {
+  AuthenticatedIndexRoute: AuthenticatedIndexRoute,
 }
 
-const IndexRouteRouteWithChildren = IndexRouteRoute._addFileChildren(
-  IndexRouteRouteChildren,
+const AuthenticatedRouteWithChildren = AuthenticatedRoute._addFileChildren(
+  AuthenticatedRouteChildren,
 )
 
 export interface FileRoutesByFullPath {
-  '': typeof IndexRouteRouteWithChildren
-  '/sign-in': typeof AuthSignInRoute
-  '/sign-up': typeof AuthSignUpRoute
-  '/': typeof IndexIndexRoute
+  '': typeof AuthenticatedRouteWithChildren
+  '/sign-in': typeof AuthPagesSignInRoute
+  '/sign-up': typeof AuthPagesSignUpRoute
+  '/': typeof AuthenticatedIndexRoute
 }
 
 export interface FileRoutesByTo {
-  '': typeof AuthRouteRouteWithChildren
-  '/sign-in': typeof AuthSignInRoute
-  '/sign-up': typeof AuthSignUpRoute
-  '/': typeof IndexIndexRoute
+  '': typeof AuthPagesRouteWithChildren
+  '/sign-in': typeof AuthPagesSignInRoute
+  '/sign-up': typeof AuthPagesSignUpRoute
+  '/': typeof AuthenticatedIndexRoute
 }
 
 export interface FileRoutesById {
   __root__: typeof rootRoute
-  '/_auth': typeof AuthRouteRouteWithChildren
-  '/_index': typeof IndexRouteRouteWithChildren
-  '/_auth/sign-in': typeof AuthSignInRoute
-  '/_auth/sign-up': typeof AuthSignUpRoute
-  '/_index/': typeof IndexIndexRoute
+  '/_authPages': typeof AuthPagesRouteWithChildren
+  '/_authenticated': typeof AuthenticatedRouteWithChildren
+  '/_authPages/sign-in': typeof AuthPagesSignInRoute
+  '/_authPages/sign-up': typeof AuthPagesSignUpRoute
+  '/_authenticated/': typeof AuthenticatedIndexRoute
 }
 
 export interface FileRouteTypes {
@@ -147,22 +147,22 @@ export interface FileRouteTypes {
   to: '' | '/sign-in' | '/sign-up' | '/'
   id:
     | '__root__'
-    | '/_auth'
-    | '/_index'
-    | '/_auth/sign-in'
-    | '/_auth/sign-up'
-    | '/_index/'
+    | '/_authPages'
+    | '/_authenticated'
+    | '/_authPages/sign-in'
+    | '/_authPages/sign-up'
+    | '/_authenticated/'
   fileRoutesById: FileRoutesById
 }
 
 export interface RootRouteChildren {
-  AuthRouteRoute: typeof AuthRouteRouteWithChildren
-  IndexRouteRoute: typeof IndexRouteRouteWithChildren
+  AuthPagesRoute: typeof AuthPagesRouteWithChildren
+  AuthenticatedRoute: typeof AuthenticatedRouteWithChildren
 }
 
 const rootRouteChildren: RootRouteChildren = {
-  AuthRouteRoute: AuthRouteRouteWithChildren,
-  IndexRouteRoute: IndexRouteRouteWithChildren,
+  AuthPagesRoute: AuthPagesRouteWithChildren,
+  AuthenticatedRoute: AuthenticatedRouteWithChildren,
 }
 
 export const routeTree = rootRoute
@@ -175,34 +175,34 @@ export const routeTree = rootRoute
     "__root__": {
       "filePath": "__root.tsx",
       "children": [
-        "/_auth",
-        "/_index"
+        "/_authPages",
+        "/_authenticated"
       ]
     },
-    "/_auth": {
-      "filePath": "_auth/route.tsx",
+    "/_authPages": {
+      "filePath": "_authPages.tsx",
       "children": [
-        "/_auth/sign-in",
-        "/_auth/sign-up"
+        "/_authPages/sign-in",
+        "/_authPages/sign-up"
       ]
     },
-    "/_index": {
-      "filePath": "_index/route.tsx",
+    "/_authenticated": {
+      "filePath": "_authenticated.tsx",
       "children": [
-        "/_index/"
+        "/_authenticated/"
       ]
     },
-    "/_auth/sign-in": {
-      "filePath": "_auth/sign-in.tsx",
-      "parent": "/_auth"
+    "/_authPages/sign-in": {
+      "filePath": "_authPages/sign-in.tsx",
+      "parent": "/_authPages"
     },
-    "/_auth/sign-up": {
-      "filePath": "_auth/sign-up.tsx",
-      "parent": "/_auth"
+    "/_authPages/sign-up": {
+      "filePath": "_authPages/sign-up.tsx",
+      "parent": "/_authPages"
     },
-    "/_index/": {
-      "filePath": "_index/index.tsx",
-      "parent": "/_index"
+    "/_authenticated/": {
+      "filePath": "_authenticated/index.tsx",
+      "parent": "/_authenticated"
     }
   }
 }

@@ -5,7 +5,7 @@ import { toast } from "sonner";
 import { useState } from "react";
 import { z } from "zod";
 
-import { Link, useNavigate } from "@tanstack/react-router";
+import { Link, redirect, useNavigate } from "@tanstack/react-router";
 import { DottetSeparator } from "@/components/dotted-separator";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Button } from "@/components/ui/button";
@@ -21,7 +21,6 @@ const formSchema = z.object({
 });
 
 export const SignInCard = () => {
-  const navigate = useNavigate();
   const [pending, setPending] = useState(false);
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -42,14 +41,14 @@ export const SignInCard = () => {
           setPending(true);
         },
         onSuccess: () => {
-          navigate({ to: "/" });
+          window.location.reload();
         },
         onError: (ctx: ErrorContext) => {
+          setPending(false);
           toast.error(ctx.error.message + "!");
         },
       }
     );
-    setPending(false);
   };
 
   const handleSignInWithGithub = async () => {
@@ -61,13 +60,12 @@ export const SignInCard = () => {
         onRequest: () => {
           setPending(true);
         },
-        onSuccess: () => {},
         onError: (ctx: ErrorContext) => {
+          setPending(false);
           toast.error(ctx.error.message + "!");
         },
       }
     );
-    setPending(false);
   };
 
   return (
