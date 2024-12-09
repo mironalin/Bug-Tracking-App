@@ -2,6 +2,7 @@ import { Hono } from "hono";
 import { cors } from "hono/cors";
 import { projectsRoute } from "./routes/projects.js";
 import { authRoute } from "./routes/auth.js";
+import { meRoute } from "./routes/me.js";
 import { auth } from "./lib/auth.js";
 
 const app = new Hono();
@@ -18,7 +19,11 @@ app.use(
   })
 );
 
-const apiRoutes = app.basePath("/api").route("/projects", projectsRoute).route("/auth/*", authRoute);
+const apiRoutes = app
+  .basePath("/api")
+  .route("/projects", projectsRoute)
+  .route("/auth/*", authRoute)
+  .route("/me", meRoute);
 
 export default app;
 export type ApiRoutes = typeof apiRoutes;
