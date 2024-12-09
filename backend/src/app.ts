@@ -10,7 +10,7 @@ const app = new Hono();
 app.use(
   "/api/auth/**", // or replace with "*" to enable cors for all routes
   cors({
-    origin: ["http://localhost:5173", "http://127.0.0.1:5173"],
+    origin: ["http://localhost:3000"],
     allowHeaders: ["Content-Type", "Authorization"],
     allowMethods: ["POST", "GET", "OPTIONS"],
     exposeHeaders: ["Content-Length"],
@@ -22,7 +22,7 @@ app.use(
 const apiRoutes = app
   .basePath("/api")
   .route("/projects", projectsRoute)
-  .route("/auth/*", authRoute)
+  .route("/auth/**", authRoute)
   .route("/me", meRoute);
 
 export default app;
