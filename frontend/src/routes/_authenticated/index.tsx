@@ -1,3 +1,4 @@
+import { CreateWorkspaceForm } from "@/features/workspaces/components/create-workspace-form";
 import { createFileRoute } from "@tanstack/react-router";
 
 export const Route = createFileRoute("/_authenticated/")({
@@ -5,5 +6,9 @@ export const Route = createFileRoute("/_authenticated/")({
 });
 
 function Index() {
-  return <div>This is the home page</div>;
+  return (
+    <div className="bg-neutral-500 p-4 h-full">
+      <CreateWorkspaceForm onCancel={() => {}} />
+    </div>
+  );
 }
