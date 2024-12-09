@@ -1,6 +1,6 @@
 import { createFileRoute, Outlet, redirect } from "@tanstack/react-router";
 import { Toaster } from "@/components/ui/sonner";
-import { userQueryOptions } from "@/lib/api";
+import { userQueryOptions } from "@/features/auth/api/authApi";
 import { Sidebar } from "@/components/sidebar";
 import { Navbar } from "@/components/navbar";
 
