@@ -10,7 +10,7 @@ import { DottedSeparator } from "@/components/dotted-separator";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
-import { Link, redirect, useNavigate } from "@tanstack/react-router";
+import { Link, useNavigate } from "@tanstack/react-router";
 import { Form, FormControl, FormField, FormItem, FormMessage } from "@/components/ui/form";
 import { authClient } from "@/lib/auth-client";
 import { ErrorContext } from "@better-fetch/fetch";
