@@ -8,7 +8,7 @@ export const workspaces = pgTable(
     slug: varchar().$default(() => generateUniqueString(16)),
     name: text("name").notNull(),
     userId: text("userId").notNull(),
-    image:
+    imageUrl: text("imageUrl"),
     createdAt: timestamp("createdAt").notNull().defaultNow(),
     updatedAt: timestamp("updatedAt").notNull().defaultNow(),
   },
@@ -19,7 +19,10 @@ export const insertWorkspacesSchema = createInsertSchema(workspaces, {
   slug: z.string().optional(),
   name: z.string().trim().min(1, "Required"),
   userId: z.string().trim().min(1, "Required"),
-  image: z.union([z.instanceof(File), z.string().transform((value) => (value === "" ? undefined : value))]).optional(),
+  imageUrl: z
+    .string()
+    .transform((value) => (value === "" ? undefined : value))
+    .optional(),
   createdAt: z.date().default(() => new Date()),
   updatedAt: z.date().default(() => new Date()),
 });

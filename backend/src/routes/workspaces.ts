@@ -32,8 +32,6 @@ export const workspacesRoute = new Hono<{
 
     const workspace = c.req.valid("json");
 
-    const image = workspace.image;
-
     const validatedWorkspace = insertWorkspacesSchema.parse({ ...workspace, userId: user.id });
 
     const result = await db
