@@ -49,7 +49,14 @@ export const CreateWorkspaceForm = ({ onCancel }: CreateWorkspaceFormProps) => {
             name: form.getValues("name"),
             imageUrl: uploadedUrl,
           };
-          createWorkspace({ json: values });
+          createWorkspace(
+            { json: values },
+            {
+              onSuccess: () => {
+                form.reset();
+              },
+            }
+          );
         },
       });
     } else {
@@ -57,7 +64,14 @@ export const CreateWorkspaceForm = ({ onCancel }: CreateWorkspaceFormProps) => {
         name: form.getValues("name"),
         imageUrl: undefined,
       };
-      createWorkspace({ json: values });
+      createWorkspace(
+        { json: values },
+        {
+          onSuccess: () => {
+            form.reset();
+          },
+        }
+      );
     }
   };
 
