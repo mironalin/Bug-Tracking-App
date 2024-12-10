@@ -6,6 +6,7 @@ import { workspaces as workspacesTable, insertWorkspacesSchema } from "../db/sch
 import { auth } from "../lib/auth.js";
 
 import { createWorkspaceSchema } from "../sharedTypes.js";
+import { eq } from "drizzle-orm";
 
 export const workspacesRoute = new Hono<{
   Variables: {
@@ -25,6 +26,14 @@ export const workspacesRoute = new Hono<{
     c.set("user", session.user);
     c.set("session", session.session);
     return next();
+  })
+  .get("/", async (c) => {
+    const user = c.get("user");
+    if (!user) return c.body(null, 401);
+
+    const workspaces = await db.select().from(workspacesTable).where(eq(workspacesTable.userId, user.id));
+
+    return c.json({ workspaces });
   })
   .post("/", zValidator("json", createWorkspaceSchema), async (c) => {
     const user = c.get("user");
