@@ -6,12 +6,14 @@ import { WorkspaceTypeInterface } from "@server/sharedTypes";
 import { WorkspaceAvatar } from "@/features/workspaces/components/workspace-avatar";
 import { useNavigate } from "@tanstack/react-router";
 import { useParams } from "@tanstack/react-router";
+import { useCreateWorkspaceModal } from "@/features/workspaces/hooks/use-create-workspace-modal";
 
 export const WorkspaceSwitcher = () => {
   const { workspaceId } = useParams({ strict: false });
+  const navigate = useNavigate();
 
   const { data } = useGetWorkspaces();
-  const navigate = useNavigate();
+  const { open } = useCreateWorkspaceModal();
 
   const onSelect = (id: string) => {
     navigate({ to: `/workspaces/${id}` });
@@ -21,7 +23,10 @@ export const WorkspaceSwitcher = () => {
     <div className="flex flex-col gap-y-2">
       <div className="flex items-center justify-between">
         <p className="text-xs uppercase text-neutral-500">Workspaces</p>
-        <RiAddCircleFill className="size-5 text-neutral-500 cursor-pointer hover:opacity-75 transition" />
+        <RiAddCircleFill
+          onClick={open}
+          className="size-5 text-neutral-500 cursor-pointer hover:opacity-75 transition"
+        />
       </div>
       <Select onValueChange={onSelect} value={workspaceId}>
         <SelectTrigger className="w-full bg-neutral-200 font-medium p-1">

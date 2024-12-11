@@ -12,12 +12,15 @@ import { DottedSeparator } from "@/components/dotted-separator";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
+import { useNavigate } from "@tanstack/react-router";
 
 interface CreateWorkspaceFormProps {
   onCancel: () => void;
 }
 
 export const CreateWorkspaceForm = ({ onCancel }: CreateWorkspaceFormProps) => {
+  const navigate = useNavigate();
+
   const [file, setFile] = useState<File | null>(null);
 
   const inputRef = useRef<HTMLInputElement>(null);
@@ -52,8 +55,10 @@ export const CreateWorkspaceForm = ({ onCancel }: CreateWorkspaceFormProps) => {
           createWorkspace(
             { json: values },
             {
-              onSuccess: () => {
+              onSuccess: (result) => {
                 form.reset();
+                onCancel?.();
+                navigate({ to: `/workspaces/${result.slug}` });
               },
             }
           );
@@ -67,8 +72,10 @@ export const CreateWorkspaceForm = ({ onCancel }: CreateWorkspaceFormProps) => {
       createWorkspace(
         { json: values },
         {
-          onSuccess: () => {
+          onSuccess: (result) => {
             form.reset();
+            onCancel?.();
+            navigate({ to: `/workspaces/${result.slug}` });
           },
         }
       );
