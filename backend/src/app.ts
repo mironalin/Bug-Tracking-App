@@ -23,7 +23,6 @@ app.use(
 
 const apiRoutes = app
   .basePath("/api")
-  .route("/projects", projectsRoute)
   .route("/auth/**", authRoute)
   .route("/me", meRoute)
   .route("/workspaces", workspacesRoute)
