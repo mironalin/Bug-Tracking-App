@@ -1,6 +1,7 @@
 // import * as _1 from "../../../node_modules/drizzle-zod/schema.types.internal.mjs";
 
 import { pgTable, text, integer, timestamp, index, varchar } from "drizzle-orm/pg-core";
+import { sql } from "drizzle-orm";
 import { createInsertSchema, createSelectSchema } from "drizzle-zod";
 import { z } from "zod";
 export const workspaces = pgTable(
@@ -13,7 +14,9 @@ export const workspaces = pgTable(
     imageUrl: text("imageUrl"),
     inviteCode: varchar().$default(() => generateUniqueString(10)),
     createdAt: timestamp("createdAt").notNull().defaultNow(),
-    updatedAt: timestamp("updatedAt").notNull().defaultNow(),
+    updatedAt: timestamp("updatedAt")
+      .notNull()
+      .$onUpdate(() => new Date()),
   },
   (workspaces) => [index("workspaces_name_idx").on(workspaces.userId)]
 );
@@ -30,6 +33,8 @@ export const insertWorkspacesSchema = createInsertSchema(workspaces, {
   createdAt: z.date().default(() => new Date()),
   updatedAt: z.date().default(() => new Date()),
 });
+
+export const updateWorkspacesSchema = createInsertSchema(workspaces).pick({ name: true, imageUrl: true }).partial();
 
 export const selectWorkspacesSchema = createSelectSchema(workspaces);
 
