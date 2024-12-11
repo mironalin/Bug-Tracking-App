@@ -1,35 +1,24 @@
 import { Hono } from "hono";
 import { zValidator } from "@hono/zod-validator";
+import { sql } from "drizzle-orm";
 
 import { db } from "../db/index.js";
-import { workspaces as workspacesTable, insertWorkspacesSchema } from "../db/schema/workspaces-schema.js";
+import {
+  workspaces as workspacesTable,
+  insertWorkspacesSchema,
+  updateWorkspacesSchema,
+} from "../db/schema/workspaces-schema.js";
 import { members as membersTable, insertMembersSchema } from "../db/schema/members-schema.js";
 import { auth } from "../lib/auth.js";
 
 import { createWorkspaceSchema, MemberRole } from "../sharedTypes.js";
-import { eq, inArray } from "drizzle-orm";
+import { and, eq, inArray } from "drizzle-orm";
+import { getMember } from "../lib/utils.js";
+import { getSessionAndUser } from "../middleware/get-session-and-user.js";
 
-export const workspacesRoute = new Hono<{
-  Variables: {
-    user: typeof auth.$Infer.Session.user | null;
-    session: typeof auth.$Infer.Session.session | null;
-  };
-}>()
-  .use("*", async (c, next) => {
-    const session = await auth.api.getSession({ headers: c.req.raw.headers });
-
-    if (!session) {
-      c.set("user", null);
-      c.set("session", null);
-      return next();
-    }
-
-    c.set("user", session.user);
-    c.set("session", session.session);
-    return next();
-  })
-  .get("/", async (c) => {
-    const user = c.get("user");
+export const workspacesRoute = new Hono()
+  .get("/", getSessionAndUser, async (c) => {
+    const user = c.var.user;
     if (!user) return c.body(null, 401);
 
     const members = await db.select().from(membersTable).where(eq(membersTable.userId, user.id));
@@ -44,8 +33,8 @@ export const workspacesRoute = new Hono<{
 
     return c.json({ workspaces });
   })
-  .post("/", zValidator("json", createWorkspaceSchema), async (c) => {
-    const user = c.get("user");
+  .post("/", getSessionAndUser, zValidator("json", createWorkspaceSchema), async (c) => {
+    const user = c.var.user;
     if (!user) return c.body(null, 401);
 
     const workspace = c.req.valid("json");
@@ -68,4 +57,52 @@ export const workspacesRoute = new Hono<{
 
     c.status(201);
     return c.json(result);
+  })
+  .get("/:workspaceId", getSessionAndUser, async (c) => {
+    const user = c.var.user;
+    if (!user) return c.body(null, 401);
+
+    const { workspaceId } = c.req.param();
+
+    const member = await getMember({ db, workspaceId, userId: user.id });
+
+    if (!member) {
+      console.log("no member found");
+      return c.json({ workspaces: [] });
+    }
+
+    const workspace = await db.select().from(workspacesTable).where(eq(workspacesTable.slug, workspaceId));
+
+    return c.json({ workspace });
+  })
+  .patch("/:workspaceId", getSessionAndUser, zValidator("json", updateWorkspacesSchema), async (c) => {
+    const user = c.var.user;
+    if (!user) return c.body(null, 401);
+
+    const { name, imageUrl } = c.req.valid("json");
+
+    const { workspaceId } = c.req.param();
+
+    const member = await getMember({ db, workspaceId, userId: user.id });
+
+    if (!member || member.role !== MemberRole.ADMIN) {
+      return c.json({ error: "Unauthorized" }, 401);
+    }
+
+    const validatedWorkspaceUpdate = updateWorkspacesSchema.parse({
+      name: name,
+      imageUrl: imageUrl,
+      updatedAt: () => sql`now()`,
+    });
+
+    console.log("Validated Update Object:", validatedWorkspaceUpdate);
+
+    const updatedWorkspace = await db
+      .update(workspacesTable)
+      .set(validatedWorkspaceUpdate)
+      .where(eq(workspacesTable.slug, workspaceId));
+
+    return c.json({ updatedWorkspace });
   });
+
+export type WorkspaceApi = typeof workspacesRoute;

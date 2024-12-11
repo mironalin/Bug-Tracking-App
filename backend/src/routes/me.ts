@@ -1,29 +1,12 @@
 import { Hono } from "hono";
 import { auth } from "../lib/auth.js";
+import { getSessionAndUser } from "../middleware/get-session-and-user.js";
 
-export const meRoute = new Hono<{
-  Variables: {
-    user: typeof auth.$Infer.Session.user | null;
-    session: typeof auth.$Infer.Session.session | null;
-  };
-}>()
-  .use("*", async (c, next) => {
-    const session = await auth.api.getSession({ headers: c.req.raw.headers });
-    if (!session) {
-      c.set("user", null);
-      c.set("session", null);
-      return next();
-    }
-
-    c.set("user", session.user);
-    c.set("session", session.session);
-    return next();
-  })
-  .get("/", async (c) => {
-    const session = c.get("session");
-    const user = c.get("user");
-    return c.json({
-      session,
-      user,
-    });
+export const meRoute = new Hono().get("/", getSessionAndUser, async (c) => {
+  const session = c.var.session;
+  const user = c.var.user;
+  return c.json({
+    session,
+    user,
   });
+});

@@ -5,6 +5,7 @@ import { meRoute } from "./routes/me.js";
 import { auth } from "./lib/auth.js";
 import { workspacesRoute } from "./routes/workspaces.js";
 import { bucketRoute } from "./routes/bucketRoute.js";
+import { logger } from "hono/logger";
 
 const app = new Hono();
 
@@ -19,6 +20,8 @@ app.use(
     credentials: true,
   })
 );
+
+// app.use("*", logger());
 
 const apiRoutes = app
   .basePath("/api")
