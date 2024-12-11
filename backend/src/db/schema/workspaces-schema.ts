@@ -9,10 +9,11 @@ export const workspaces = pgTable(
     name: text("name").notNull(),
     userId: text("userId").notNull(),
     imageUrl: text("imageUrl"),
+    inviteCode: varchar().$default(() => generateUniqueString(10)),
     createdAt: timestamp("createdAt").notNull().defaultNow(),
     updatedAt: timestamp("updatedAt").notNull().defaultNow(),
   },
-  (workspaces) => [index("name_idx").on(workspaces.userId)]
+  (workspaces) => [index("workspaces_name_idx").on(workspaces.userId)]
 );
 
 export const insertWorkspacesSchema = createInsertSchema(workspaces, {
@@ -23,9 +24,12 @@ export const insertWorkspacesSchema = createInsertSchema(workspaces, {
     .string()
     .transform((value) => (value === "" ? undefined : value))
     .optional(),
+  inviteCode: z.string().optional(),
   createdAt: z.date().default(() => new Date()),
   updatedAt: z.date().default(() => new Date()),
 });
+
+export const selectWorkspacesSchema = createSelectSchema(workspaces);
 
 function generateUniqueString(length: number = 12): string {
   const characters = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
