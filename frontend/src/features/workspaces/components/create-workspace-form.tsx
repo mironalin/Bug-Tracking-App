@@ -1,6 +1,7 @@
 import { useRef, useState } from "react";
 import { useForm } from "react-hook-form";
 import { ImageIcon } from "lucide-react";
+import { cn } from "@/lib/utils";
 
 import { useCreateWorkspace } from "@/features/workspaces/api/use-create-workspaces";
 import { useUploadToS3 } from "@/features/workspaces/api/use-upload-to-s3-mutate";
@@ -15,7 +16,7 @@ import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { useNavigate } from "@tanstack/react-router";
 
 interface CreateWorkspaceFormProps {
-  onCancel: () => void;
+  onCancel?: () => void;
 }
 
 export const CreateWorkspaceForm = ({ onCancel }: CreateWorkspaceFormProps) => {
@@ -153,7 +154,14 @@ export const CreateWorkspaceForm = ({ onCancel }: CreateWorkspaceFormProps) => {
             </div>
             <DottedSeparator className="py-7" />
             <div className="flex items-center justify-between">
-              <Button type="button" size="lg" variant="secondary" onClick={onCancel} disabled={isPending}>
+              <Button
+                type="button"
+                size="lg"
+                variant="secondary"
+                onClick={onCancel}
+                disabled={isPending}
+                className={cn(onCancel ? "block" : "invisible")}
+              >
                 Cancel
               </Button>
               <Button type="submit" size="lg" variant="primary" disabled={isUploading || isPending}>

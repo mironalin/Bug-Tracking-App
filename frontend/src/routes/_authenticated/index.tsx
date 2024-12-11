@@ -7,7 +7,7 @@ export const Route = createFileRoute("/_authenticated/")({
     const data = await queryClient.fetchQuery(getWorkspacesQueryOptions);
     console.log({ data });
     if (data.workspaces.length === 0) {
-      // throw redirect({ to: "/workspaces/create" });
+      throw redirect({ to: "/workspaces/create" });
     } else {
       throw redirect({ to: `/workspaces/${data.workspaces[data.workspaces.length - 1].slug}` });
     }
