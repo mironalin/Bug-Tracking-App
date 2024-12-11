@@ -2,6 +2,7 @@ import { Button } from "@/components/ui/button";
 import { createFileRoute, Link, Outlet, redirect, useLocation } from "@tanstack/react-router";
 import { Toaster } from "@/components/ui/sonner";
 import { userQueryOptions } from "@/features/auth/api/authApi";
+import { LoaderComponent } from "@/components/LoaderComponent";
 
 export const Route = createFileRoute("/_authPages")({
   beforeLoad: async ({ context }) => {
@@ -11,7 +12,7 @@ export const Route = createFileRoute("/_authPages")({
       throw redirect({ to: "/" });
     }
   },
-
+  pendingComponent: () => <LoaderComponent />,
   component: RouteComponent,
 });
 

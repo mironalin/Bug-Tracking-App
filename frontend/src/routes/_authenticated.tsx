@@ -3,6 +3,7 @@ import { Toaster } from "@/components/ui/sonner";
 import { userQueryOptions } from "@/features/auth/api/authApi";
 import { Sidebar } from "@/components/sidebar";
 import { Navbar } from "@/components/navbar";
+import { LoaderComponent } from "@/components/LoaderComponent";
 
 export const Route = createFileRoute("/_authenticated")({
   beforeLoad: async ({ context }) => {
@@ -12,6 +13,7 @@ export const Route = createFileRoute("/_authenticated")({
       throw redirect({ to: "/sign-in" });
     }
   },
+  pendingComponent: () => <LoaderComponent />,
   component: RouteComponent,
 });
 
