@@ -1,6 +1,5 @@
 import { Hono } from "hono";
 import { cors } from "hono/cors";
-import { projectsRoute } from "./routes/projects.js";
 import { authRoute } from "./routes/auth.js";
 import { meRoute } from "./routes/me.js";
 import { auth } from "./lib/auth.js";
