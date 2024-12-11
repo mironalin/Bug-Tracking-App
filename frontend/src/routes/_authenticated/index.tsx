@@ -1,14 +1,20 @@
-import { CreateWorkspaceForm } from "@/features/workspaces/components/create-workspace-form";
-import { createFileRoute } from "@tanstack/react-router";
+import { getWorkspacesQueryOptions } from "@/features/workspaces/api/use-get-workspaces";
+import { createFileRoute, redirect } from "@tanstack/react-router";
 
 export const Route = createFileRoute("/_authenticated/")({
+  beforeLoad: async ({ context }) => {
+    const queryClient = context.queryClient;
+    const data = await queryClient.fetchQuery(getWorkspacesQueryOptions);
+    console.log({ data });
+    if (data.workspaces.length === 0) {
+      // throw redirect({ to: "/workspaces/create" });
+    } else {
+      throw redirect({ to: `/workspaces/${data.workspaces[0].slug}` });
+    }
+  },
   component: Index,
 });
 
 function Index() {
-  return (
-    <div className="bg-neutral-500 p-4 h-full">
-      <CreateWorkspaceForm onCancel={() => {}} />
-    </div>
-  );
+  return <div>Home page</div>;
 }

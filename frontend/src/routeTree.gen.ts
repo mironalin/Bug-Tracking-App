@@ -16,6 +16,7 @@ import { Route as AuthPagesImport } from './routes/_authPages'
 import { Route as AuthenticatedIndexImport } from './routes/_authenticated/index'
 import { Route as AuthPagesSignUpImport } from './routes/_authPages/sign-up'
 import { Route as AuthPagesSignInImport } from './routes/_authPages/sign-in'
+import { Route as AuthenticatedWorkspacesWorkspaceIdImport } from './routes/_authenticated/workspaces/$workspaceId'
 
 // Create/Update Routes
 
@@ -46,6 +47,13 @@ const AuthPagesSignInRoute = AuthPagesSignInImport.update({
   path: '/sign-in',
   getParentRoute: () => AuthPagesRoute,
 } as any)
+
+const AuthenticatedWorkspacesWorkspaceIdRoute =
+  AuthenticatedWorkspacesWorkspaceIdImport.update({
+    id: '/workspaces/$workspaceId',
+    path: '/workspaces/$workspaceId',
+    getParentRoute: () => AuthenticatedRoute,
+  } as any)
 
 // Populate the FileRoutesByPath interface
 
@@ -86,6 +94,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedIndexImport
       parentRoute: typeof AuthenticatedImport
     }
+    '/_authenticated/workspaces/$workspaceId': {
+      id: '/_authenticated/workspaces/$workspaceId'
+      path: '/workspaces/$workspaceId'
+      fullPath: '/workspaces/$workspaceId'
+      preLoaderRoute: typeof AuthenticatedWorkspacesWorkspaceIdImport
+      parentRoute: typeof AuthenticatedImport
+    }
   }
 }
 
@@ -107,10 +122,13 @@ const AuthPagesRouteWithChildren = AuthPagesRoute._addFileChildren(
 
 interface AuthenticatedRouteChildren {
   AuthenticatedIndexRoute: typeof AuthenticatedIndexRoute
+  AuthenticatedWorkspacesWorkspaceIdRoute: typeof AuthenticatedWorkspacesWorkspaceIdRoute
 }
 
 const AuthenticatedRouteChildren: AuthenticatedRouteChildren = {
   AuthenticatedIndexRoute: AuthenticatedIndexRoute,
+  AuthenticatedWorkspacesWorkspaceIdRoute:
+    AuthenticatedWorkspacesWorkspaceIdRoute,
 }
 
 const AuthenticatedRouteWithChildren = AuthenticatedRoute._addFileChildren(
@@ -122,6 +140,7 @@ export interface FileRoutesByFullPath {
   '/sign-in': typeof AuthPagesSignInRoute
   '/sign-up': typeof AuthPagesSignUpRoute
   '/': typeof AuthenticatedIndexRoute
+  '/workspaces/$workspaceId': typeof AuthenticatedWorkspacesWorkspaceIdRoute
 }
 
 export interface FileRoutesByTo {
@@ -129,6 +148,7 @@ export interface FileRoutesByTo {
   '/sign-in': typeof AuthPagesSignInRoute
   '/sign-up': typeof AuthPagesSignUpRoute
   '/': typeof AuthenticatedIndexRoute
+  '/workspaces/$workspaceId': typeof AuthenticatedWorkspacesWorkspaceIdRoute
 }
 
 export interface FileRoutesById {
@@ -138,13 +158,14 @@ export interface FileRoutesById {
   '/_authPages/sign-in': typeof AuthPagesSignInRoute
   '/_authPages/sign-up': typeof AuthPagesSignUpRoute
   '/_authenticated/': typeof AuthenticatedIndexRoute
+  '/_authenticated/workspaces/$workspaceId': typeof AuthenticatedWorkspacesWorkspaceIdRoute
 }
 
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '' | '/sign-in' | '/sign-up' | '/'
+  fullPaths: '' | '/sign-in' | '/sign-up' | '/' | '/workspaces/$workspaceId'
   fileRoutesByTo: FileRoutesByTo
-  to: '' | '/sign-in' | '/sign-up' | '/'
+  to: '' | '/sign-in' | '/sign-up' | '/' | '/workspaces/$workspaceId'
   id:
     | '__root__'
     | '/_authPages'
@@ -152,6 +173,7 @@ export interface FileRouteTypes {
     | '/_authPages/sign-in'
     | '/_authPages/sign-up'
     | '/_authenticated/'
+    | '/_authenticated/workspaces/$workspaceId'
   fileRoutesById: FileRoutesById
 }
 
@@ -189,7 +211,8 @@ export const routeTree = rootRoute
     "/_authenticated": {
       "filePath": "_authenticated.tsx",
       "children": [
-        "/_authenticated/"
+        "/_authenticated/",
+        "/_authenticated/workspaces/$workspaceId"
       ]
     },
     "/_authPages/sign-in": {
@@ -202,6 +225,10 @@ export const routeTree = rootRoute
     },
     "/_authenticated/": {
       "filePath": "_authenticated/index.tsx",
+      "parent": "/_authenticated"
+    },
+    "/_authenticated/workspaces/$workspaceId": {
+      "filePath": "_authenticated/workspaces/$workspaceId.tsx",
       "parent": "/_authenticated"
     }
   }
