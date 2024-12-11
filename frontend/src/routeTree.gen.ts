@@ -19,6 +19,7 @@ import { Route as AuthPagesSignUpImport } from './routes/_authPages/sign-up'
 import { Route as AuthPagesSignInImport } from './routes/_authPages/sign-in'
 import { Route as StandaloneWorkspacesCreateImport } from './routes/_standalone/workspaces.create'
 import { Route as AuthenticatedWorkspacesWorkspaceIdImport } from './routes/_authenticated/workspaces/$workspaceId'
+import { Route as StandaloneWorkspacesWorkspaceIdSettingsImport } from './routes/_standalone/workspaces.$workspaceId.settings'
 
 // Create/Update Routes
 
@@ -68,6 +69,13 @@ const AuthenticatedWorkspacesWorkspaceIdRoute =
     id: '/workspaces/$workspaceId',
     path: '/workspaces/$workspaceId',
     getParentRoute: () => AuthenticatedRoute,
+  } as any)
+
+const StandaloneWorkspacesWorkspaceIdSettingsRoute =
+  StandaloneWorkspacesWorkspaceIdSettingsImport.update({
+    id: '/workspaces/$workspaceId/settings',
+    path: '/workspaces/$workspaceId/settings',
+    getParentRoute: () => StandaloneRoute,
   } as any)
 
 // Populate the FileRoutesByPath interface
@@ -130,6 +138,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof StandaloneWorkspacesCreateImport
       parentRoute: typeof StandaloneImport
     }
+    '/_standalone/workspaces/$workspaceId/settings': {
+      id: '/_standalone/workspaces/$workspaceId/settings'
+      path: '/workspaces/$workspaceId/settings'
+      fullPath: '/workspaces/$workspaceId/settings'
+      preLoaderRoute: typeof StandaloneWorkspacesWorkspaceIdSettingsImport
+      parentRoute: typeof StandaloneImport
+    }
   }
 }
 
@@ -166,10 +181,13 @@ const AuthenticatedRouteWithChildren = AuthenticatedRoute._addFileChildren(
 
 interface StandaloneRouteChildren {
   StandaloneWorkspacesCreateRoute: typeof StandaloneWorkspacesCreateRoute
+  StandaloneWorkspacesWorkspaceIdSettingsRoute: typeof StandaloneWorkspacesWorkspaceIdSettingsRoute
 }
 
 const StandaloneRouteChildren: StandaloneRouteChildren = {
   StandaloneWorkspacesCreateRoute: StandaloneWorkspacesCreateRoute,
+  StandaloneWorkspacesWorkspaceIdSettingsRoute:
+    StandaloneWorkspacesWorkspaceIdSettingsRoute,
 }
 
 const StandaloneRouteWithChildren = StandaloneRoute._addFileChildren(
@@ -183,6 +201,7 @@ export interface FileRoutesByFullPath {
   '/': typeof AuthenticatedIndexRoute
   '/workspaces/$workspaceId': typeof AuthenticatedWorkspacesWorkspaceIdRoute
   '/workspaces/create': typeof StandaloneWorkspacesCreateRoute
+  '/workspaces/$workspaceId/settings': typeof StandaloneWorkspacesWorkspaceIdSettingsRoute
 }
 
 export interface FileRoutesByTo {
@@ -192,6 +211,7 @@ export interface FileRoutesByTo {
   '/': typeof AuthenticatedIndexRoute
   '/workspaces/$workspaceId': typeof AuthenticatedWorkspacesWorkspaceIdRoute
   '/workspaces/create': typeof StandaloneWorkspacesCreateRoute
+  '/workspaces/$workspaceId/settings': typeof StandaloneWorkspacesWorkspaceIdSettingsRoute
 }
 
 export interface FileRoutesById {
@@ -204,6 +224,7 @@ export interface FileRoutesById {
   '/_authenticated/': typeof AuthenticatedIndexRoute
   '/_authenticated/workspaces/$workspaceId': typeof AuthenticatedWorkspacesWorkspaceIdRoute
   '/_standalone/workspaces/create': typeof StandaloneWorkspacesCreateRoute
+  '/_standalone/workspaces/$workspaceId/settings': typeof StandaloneWorkspacesWorkspaceIdSettingsRoute
 }
 
 export interface FileRouteTypes {
@@ -215,6 +236,7 @@ export interface FileRouteTypes {
     | '/'
     | '/workspaces/$workspaceId'
     | '/workspaces/create'
+    | '/workspaces/$workspaceId/settings'
   fileRoutesByTo: FileRoutesByTo
   to:
     | ''
@@ -223,6 +245,7 @@ export interface FileRouteTypes {
     | '/'
     | '/workspaces/$workspaceId'
     | '/workspaces/create'
+    | '/workspaces/$workspaceId/settings'
   id:
     | '__root__'
     | '/_authPages'
@@ -233,6 +256,7 @@ export interface FileRouteTypes {
     | '/_authenticated/'
     | '/_authenticated/workspaces/$workspaceId'
     | '/_standalone/workspaces/create'
+    | '/_standalone/workspaces/$workspaceId/settings'
   fileRoutesById: FileRoutesById
 }
 
@@ -280,7 +304,8 @@ export const routeTree = rootRoute
     "/_standalone": {
       "filePath": "_standalone.tsx",
       "children": [
-        "/_standalone/workspaces/create"
+        "/_standalone/workspaces/create",
+        "/_standalone/workspaces/$workspaceId/settings"
       ]
     },
     "/_authPages/sign-in": {
@@ -301,6 +326,10 @@ export const routeTree = rootRoute
     },
     "/_standalone/workspaces/create": {
       "filePath": "_standalone/workspaces.create.tsx",
+      "parent": "/_standalone"
+    },
+    "/_standalone/workspaces/$workspaceId/settings": {
+      "filePath": "_standalone/workspaces.$workspaceId.settings.tsx",
       "parent": "/_standalone"
     }
   }

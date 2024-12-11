@@ -1,12 +1,12 @@
-import { useRef, useState } from "react";
+import { useRef, useState, useEffect } from "react";
 import { useForm } from "react-hook-form";
-import { ImageIcon } from "lucide-react";
+import { ArrowLeftIcon, ImageIcon } from "lucide-react";
 import { cn } from "@/lib/utils";
 
-import { useCreateWorkspace } from "@/features/workspaces/api/use-create-workspace";
+import { useUpdateWorkspace } from "@/features/workspaces/api/use-update-workspace";
 import { useUploadToS3 } from "@/features/workspaces/api/use-upload-to-s3-mutate";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { CreateWorkspace, createWorkspaceSchema } from "@server/sharedTypes";
+import { UpdateWorkspace, WorkspaceTypeInterface } from "@server/sharedTypes";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { DottedSeparator } from "@/components/dotted-separator";
@@ -14,26 +14,28 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { useNavigate } from "@tanstack/react-router";
-
-interface CreateWorkspaceFormProps {
+import { updateWorkspacesSchema } from "@server/db/schema/workspaces-schema";
+import { useQueryClient } from "@tanstack/react-query";
+interface EditWorkspaceFormProps {
   onCancel?: () => void;
+  initialValues: WorkspaceTypeInterface;
 }
 
-export const CreateWorkspaceForm = ({ onCancel }: CreateWorkspaceFormProps) => {
+export const EditWorkspaceForm = ({ onCancel, initialValues }: EditWorkspaceFormProps) => {
   const navigate = useNavigate();
 
   const [file, setFile] = useState<File | null>(null);
 
   const inputRef = useRef<HTMLInputElement>(null);
 
-  const { mutate: createWorkspace, isPending } = useCreateWorkspace();
+  const { mutate: updateWorkspace, isPending } = useUpdateWorkspace();
   const { mutate: uploadFile, isPending: isUploading } = useUploadToS3();
 
-  const form = useForm<CreateWorkspace>({
-    resolver: zodResolver(createWorkspaceSchema),
+  const form = useForm<UpdateWorkspace>({
+    resolver: zodResolver(updateWorkspacesSchema),
     defaultValues: {
-      name: "",
-      imageUrl: "",
+      ...initialValues,
+      imageUrl: initialValues.imageUrl ?? undefined,
     },
   });
 
@@ -49,34 +51,34 @@ export const CreateWorkspaceForm = ({ onCancel }: CreateWorkspaceFormProps) => {
     if (file) {
       uploadFile(file, {
         onSuccess: (uploadedUrl) => {
-          const values: CreateWorkspace = {
+          const finalValues: UpdateWorkspace = {
             name: form.getValues("name"),
             imageUrl: uploadedUrl,
           };
-          createWorkspace(
-            { json: values },
+          updateWorkspace(
+            { json: finalValues, param: { workspaceId: initialValues.slug } },
             {
-              onSuccess: (result) => {
-                form.reset();
+              onSuccess: () => {
+                // form.reset();
                 onCancel?.();
-                navigate({ to: `/workspaces/${result.slug}` });
+                navigate({ to: `/workspaces/${initialValues.slug}` });
               },
             }
           );
         },
       });
     } else {
-      const values: CreateWorkspace = {
+      const finalValues: UpdateWorkspace = {
         name: form.getValues("name"),
         imageUrl: undefined,
       };
-      createWorkspace(
-        { json: values },
+      updateWorkspace(
+        { json: finalValues, param: { workspaceId: initialValues.slug } },
         {
-          onSuccess: (result) => {
-            form.reset();
+          onSuccess: () => {
+            // form.reset();
             onCancel?.();
-            navigate({ to: `/workspaces/${result.slug}` });
+            navigate({ to: `/workspaces/${initialValues.slug}` });
           },
         }
       );
@@ -85,8 +87,16 @@ export const CreateWorkspaceForm = ({ onCancel }: CreateWorkspaceFormProps) => {
 
   return (
     <Card className="w-full h-full border-none shadow-none">
-      <CardHeader className="flex p-7">
-        <CardTitle className="text-xl font-bold">Create a new workspace</CardTitle>
+      <CardHeader className="flex flex-row items-center gap-x-4 space-y-[-2px] p-7">
+        <Button
+          size="sm"
+          variant="secondary"
+          onClick={onCancel ? onCancel : () => navigate({ to: `/workspaces/${initialValues.slug}` })}
+        >
+          <ArrowLeftIcon className="size-4" />
+          <p className="mb-[0.5px]">Back</p>
+        </Button>
+        <CardTitle className="text-xl font-bold mb-10">{initialValues.name}</CardTitle>
       </CardHeader>
       <div className="px-7">
         <DottedSeparator />
@@ -181,7 +191,7 @@ export const CreateWorkspaceForm = ({ onCancel }: CreateWorkspaceFormProps) => {
                 Cancel
               </Button>
               <Button type="submit" size="lg" variant="primary" disabled={isUploading || isPending}>
-                {isUploading ? "Uploading Image..." : isPending ? "Creating Workspace..." : "Create Workspace"}
+                {isUploading ? "Uploading Image..." : isPending ? "Saving changes..." : "Save changes"}
               </Button>
             </div>
           </form>

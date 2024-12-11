@@ -5,7 +5,6 @@ export const Route = createFileRoute("/_authenticated/")({
   beforeLoad: async ({ context }) => {
     const queryClient = context.queryClient;
     const data = await queryClient.fetchQuery(getWorkspacesQueryOptions);
-    console.log({ data });
     if (data.workspaces.length === 0) {
       throw redirect({ to: "/workspaces/create" });
     } else {

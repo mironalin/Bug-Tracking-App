@@ -91,7 +91,7 @@ export const workspacesRoute = new Hono()
 
     const validatedWorkspaceUpdate = updateWorkspacesSchema.parse({
       name: name,
-      imageUrl: imageUrl,
+      imageUrl: imageUrl ?? null,
       updatedAt: () => sql`now()`,
     });
 

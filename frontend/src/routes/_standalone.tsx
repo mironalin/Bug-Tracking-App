@@ -1,8 +1,16 @@
-import { createFileRoute, Link, Outlet } from "@tanstack/react-router";
+import { createFileRoute, Link, Outlet, redirect } from "@tanstack/react-router";
 import { LoaderComponent } from "@/components/loader-component";
 import { UserButton } from "@/features/auth/components/user-button";
+import { userQueryOptions } from "@/features/auth/api/authApi";
 
 export const Route = createFileRoute("/_standalone")({
+  beforeLoad: async ({ context }) => {
+    const queryClient = context.queryClient;
+    const data = await queryClient.fetchQuery(userQueryOptions);
+    if (!data.session) {
+      throw redirect({ to: "/sign-in" });
+    }
+  },
   pendingComponent: () => <LoaderComponent />,
   component: RouteComponent,
 });
