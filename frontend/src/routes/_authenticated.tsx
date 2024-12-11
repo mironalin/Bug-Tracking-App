@@ -3,8 +3,8 @@ import { Toaster } from "@/components/ui/sonner";
 import { userQueryOptions } from "@/features/auth/api/authApi";
 import { Sidebar } from "@/components/sidebar";
 import { Navbar } from "@/components/navbar";
-import { LoaderComponent } from "@/components/LoaderComponent";
-
+import { LoaderComponent } from "@/components/loader-component";
+import { CreateWorkspaceModal } from "@/features/workspaces/components/create-workspace-modal";
 export const Route = createFileRoute("/_authenticated")({
   beforeLoad: async ({ context }) => {
     const queryClient = context.queryClient;
@@ -20,6 +20,7 @@ export const Route = createFileRoute("/_authenticated")({
 function RouteComponent() {
   return (
     <div className="min-h-screen">
+      <CreateWorkspaceModal />
       <div className="flex w-full h-full">
         <div className="fixed left-0 top-0 hidden lg:block lg:w-[264px] h-full overflow-y-auto">
           <Sidebar />

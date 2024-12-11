@@ -2,7 +2,7 @@ import { Button } from "@/components/ui/button";
 import { createFileRoute, Link, Outlet, redirect, useLocation } from "@tanstack/react-router";
 import { Toaster } from "@/components/ui/sonner";
 import { userQueryOptions } from "@/features/auth/api/authApi";
-import { LoaderComponent } from "@/components/LoaderComponent";
+import { LoaderComponent } from "@/components/loader-component";
 
 export const Route = createFileRoute("/_authPages")({
   beforeLoad: async ({ context }) => {
