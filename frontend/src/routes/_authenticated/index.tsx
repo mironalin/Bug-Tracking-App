@@ -9,7 +9,7 @@ export const Route = createFileRoute("/_authenticated/")({
     if (data.workspaces.length === 0) {
       // throw redirect({ to: "/workspaces/create" });
     } else {
-      throw redirect({ to: `/workspaces/${data.workspaces[0].slug}` });
+      throw redirect({ to: `/workspaces/${data.workspaces[data.workspaces.length - 1].slug}` });
     }
   },
   component: Index,
