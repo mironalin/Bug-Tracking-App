@@ -1,7 +1,7 @@
 import { Hono } from "hono";
 import { zValidator } from "@hono/zod-validator";
 import { sql } from "drizzle-orm";
-
+import { z } from "zod";
 import { db } from "../db/index.js";
 import {
   workspaces as workspacesTable,
@@ -76,6 +76,16 @@ export const workspacesRoute = new Hono()
 
     return c.json({ workspace });
   })
+  .get("/:workspaceId/info", getSessionAndUser, async (c) => {
+    const user = c.var.user;
+    if (!user) return c.body(null, 401);
+
+    const { workspaceId } = c.req.param();
+
+    const workspace = await db.select().from(workspacesTable).where(eq(workspacesTable.slug, workspaceId));
+
+    return c.json({ name: workspace[0].name });
+  })
   .patch("/:workspaceId", getSessionAndUser, zValidator("json", updateWorkspacesSchema), async (c) => {
     const user = c.var.user;
     if (!user) return c.body(null, 401);
@@ -146,6 +156,35 @@ export const workspacesRoute = new Hono()
       .where(eq(workspacesTable.slug, workspaceId))
       .returning()
       .then((res) => res[0]);
+
+    return c.json({ workspace });
+  })
+  .post("/:workspaceId/join", getSessionAndUser, zValidator("json", z.object({ code: z.string() })), async (c) => {
+    const user = c.var.user;
+    if (!user) return c.body(null, 401);
+
+    const { workspaceId } = c.req.param();
+    const { code } = c.req.valid("json");
+
+    const member = await getMember({ db, workspaceId, userId: user.id });
+
+    if (member) {
+      return c.json({ error: "Already a member" }, 400);
+    }
+
+    const workspace = (await db.select().from(workspacesTable).where(eq(workspacesTable.slug, workspaceId)))[0];
+
+    if (workspace.inviteCode !== code) {
+      return c.json({ error: "Invalid code" }, 400);
+    }
+
+    const validatedMember = insertMembersSchema.parse({
+      userId: user.id,
+      workspaceId: workspace.slug,
+      role: MemberRole.MEMBER,
+    });
+
+    await db.insert(membersTable).values(validatedMember);
 
     return c.json({ workspace });
   });
