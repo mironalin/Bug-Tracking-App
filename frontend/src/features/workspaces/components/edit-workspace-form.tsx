@@ -237,7 +237,7 @@ export const EditWorkspaceForm = ({ onCancel, initialValues }: EditWorkspaceForm
               size="sm"
               variant="destructive"
               type="button"
-              disabled={isPending}
+              disabled={isPending || isDeleting}
               onClick={handleDelete}
             >
               Delete Workspace
