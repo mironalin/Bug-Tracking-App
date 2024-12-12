@@ -34,11 +34,13 @@ export const insertWorkspacesSchema = createInsertSchema(workspaces, {
   updatedAt: z.date().default(() => new Date()),
 });
 
-export const updateWorkspacesSchema = createInsertSchema(workspaces).pick({ name: true, imageUrl: true }).partial();
+export const updateWorkspacesSchema = createInsertSchema(workspaces)
+  .pick({ name: true, imageUrl: true, inviteCode: true })
+  .partial();
 
 export const selectWorkspacesSchema = createSelectSchema(workspaces);
 
-function generateUniqueString(length: number = 12): string {
+export function generateUniqueString(length: number = 12): string {
   const characters = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
   let uniqueString = "";
 

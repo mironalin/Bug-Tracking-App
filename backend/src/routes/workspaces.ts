@@ -7,6 +7,7 @@ import {
   workspaces as workspacesTable,
   insertWorkspacesSchema,
   updateWorkspacesSchema,
+  generateUniqueString,
 } from "../db/schema/workspaces-schema.js";
 import { members as membersTable, insertMembersSchema } from "../db/schema/members-schema.js";
 import { auth } from "../lib/auth.js";
@@ -92,7 +93,6 @@ export const workspacesRoute = new Hono()
     const validatedWorkspaceUpdate = updateWorkspacesSchema.parse({
       name: name,
       imageUrl: imageUrl ?? null,
-      updatedAt: () => sql`now()`,
     });
 
     console.log("Validated Update Object:", validatedWorkspaceUpdate);
@@ -123,6 +123,31 @@ export const workspacesRoute = new Hono()
     await db.delete(workspacesTable).where(eq(workspacesTable.slug, workspaceId));
 
     return c.json({ workspace: { slug: workspaceId } });
+  })
+  .post("/:workspaceId/reset-invite-code", getSessionAndUser, async (c) => {
+    const user = c.var.user;
+    if (!user) return c.body(null, 401);
+
+    const { workspaceId } = c.req.param();
+
+    const member = await getMember({ db, workspaceId, userId: user.id });
+
+    if (!member || member.role !== MemberRole.ADMIN) {
+      return c.json({ error: "Unauthorized" }, 401);
+    }
+
+    const validatedWorkspaceUpdate = updateWorkspacesSchema.parse({
+      inviteCode: generateUniqueString(10),
+    });
+
+    const workspace = await db
+      .update(workspacesTable)
+      .set(validatedWorkspaceUpdate)
+      .where(eq(workspacesTable.slug, workspaceId))
+      .returning()
+      .then((res) => res[0]);
+
+    return c.json({ workspace });
   });
 
 export type WorkspaceApi = typeof workspacesRoute;
