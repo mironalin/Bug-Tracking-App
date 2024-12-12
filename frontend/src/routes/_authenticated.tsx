@@ -1,10 +1,10 @@
 import { createFileRoute, Outlet, redirect } from "@tanstack/react-router";
-import { Toaster } from "@/components/ui/sonner";
 import { userQueryOptions } from "@/features/auth/api/authApi";
 import { Sidebar } from "@/components/sidebar";
 import { Navbar } from "@/components/navbar";
 import { LoaderComponent } from "@/components/loader-component";
 import { CreateWorkspaceModal } from "@/features/workspaces/components/create-workspace-modal";
+
 export const Route = createFileRoute("/_authenticated")({
   beforeLoad: async ({ context }) => {
     const queryClient = context.queryClient;
@@ -34,7 +34,6 @@ function RouteComponent() {
           </div>
         </div>
       </div>
-      <Toaster />
     </div>
   );
 }

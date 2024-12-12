@@ -37,7 +37,6 @@ function RouteComponent() {
         </nav>
         <div className="flex flex-col items-center justify-center pt-4 md:pt-14">
           <Outlet />
-          <Toaster />
         </div>
       </div>
     </main>
