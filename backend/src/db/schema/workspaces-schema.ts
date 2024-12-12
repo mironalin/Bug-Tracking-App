@@ -1,7 +1,6 @@
 // import * as _1 from "../../../node_modules/drizzle-zod/schema.types.internal.mjs";
 
 import { pgTable, text, integer, timestamp, index, varchar } from "drizzle-orm/pg-core";
-import { sql } from "drizzle-orm";
 import { createInsertSchema, createSelectSchema } from "drizzle-zod";
 import { z } from "zod";
 export const workspaces = pgTable(
