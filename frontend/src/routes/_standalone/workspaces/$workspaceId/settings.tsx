@@ -1,7 +1,7 @@
 import { EditWorkspaceForm } from "@/features/workspaces/components/edit-workspace-form";
 import { createFileRoute } from "@tanstack/react-router";
 import { useGetWorkspaceById } from "@/features/workspaces/api/use-get-workspace-by-id";
-import { LoadingEditWorkspaceForm } from "@/features/workspaces/components/loading-workspace-form";
+import { LoadingSettingsForm } from "@/features/workspaces/components/loading-settings-form";
 
 export const Route = createFileRoute("/_standalone/workspaces/$workspaceId/settings")({
   component: RouteComponent,
@@ -16,7 +16,7 @@ function RouteComponent() {
   if (isFetching) {
     return (
       <div className="w-full lg:max-w-xl">
-        <LoadingEditWorkspaceForm />
+        <LoadingSettingsForm />
       </div>
     );
   }
