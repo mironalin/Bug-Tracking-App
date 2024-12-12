@@ -68,7 +68,6 @@ export const workspacesRoute = new Hono()
     const member = await getMember({ db, workspaceId, userId: user.id });
 
     if (!member) {
-      console.log("no member found");
       return c.json({ workspaces: [] });
     }
 
@@ -187,6 +186,24 @@ export const workspacesRoute = new Hono()
     await db.insert(membersTable).values(validatedMember);
 
     return c.json({ workspace });
+  })
+  .get("/:workspaceId/join/:inviteCode", getSessionAndUser, async (c) => {
+    const user = c.var.user;
+    if (!user) return c.body(null, 401);
+
+    const { workspaceId, inviteCode } = c.req.param();
+
+    const workspace = (await db.select().from(workspacesTable).where(eq(workspacesTable.slug, workspaceId)))[0];
+
+    if (workspace.inviteCode !== inviteCode) {
+      return c.json({ success: false });
+    }
+
+    //else return true
+    return c.json({ success: true });
   });
 
 export type WorkspaceApi = typeof workspacesRoute;
+
+//http://localhost:5173/workspaces/07d7nIhKuBX5v8ve/join/dPIG8LZSz4
+//http://localhost:5173/workspaces/G4uzsfnUJL9Y19WU/join/gUc9AjtSNF
