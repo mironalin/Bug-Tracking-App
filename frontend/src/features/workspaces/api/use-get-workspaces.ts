@@ -6,7 +6,7 @@ export const getWorkspacesQuery = async () => {
   const response = await api.workspaces.$get();
 
   if (!response.ok) {
-    throw Error("Failed to fetch workspaces");
+    throw Error("Failed to fetch workspaces: " + response.statusText);
   }
 
   const data = await response.json();

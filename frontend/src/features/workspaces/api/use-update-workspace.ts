@@ -14,9 +14,8 @@ export const useUpdateWorkspace = () => {
     mutationFn: async ({ json, param }) => {
       const response = await api.workspaces[":workspaceId"]["$patch"]({ json, param });
 
-      // console.log({ json, param });
       if (!response.ok) {
-        throw new Error("Failed to update workspace");
+        throw new Error("Failed to update workspace: " + response.statusText);
       }
 
       return await response.json();
@@ -25,8 +24,8 @@ export const useUpdateWorkspace = () => {
       toast.success("Workspace updated!");
       queryClient.invalidateQueries({ queryKey: ["workspaces"] });
     },
-    onError: () => {
-      toast.error("Failed to create workspace!");
+    onError: (error) => {
+      toast.error(error.message);
     },
   });
 

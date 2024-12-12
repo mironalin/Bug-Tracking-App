@@ -3,7 +3,6 @@ import { toast } from "sonner";
 
 import { api } from "@/lib/rpc";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-
 import { useParams } from "@tanstack/react-router";
 
 type ResponseType = InferResponseType<(typeof api.workspaces)[":workspaceId"]["$delete"], 200>;
@@ -17,17 +16,17 @@ export const useDeleteWorkspace = () => {
       const response = await api.workspaces[":workspaceId"]["$delete"]({ param });
 
       if (!response.ok) {
-        throw new Error("Failed to delete workspace");
+        throw new Error("Failed to delete workspace: " + response.statusText);
       }
 
       return await response.json();
     },
-    onSuccess: ({ workspace }) => {
+    onSuccess: () => {
       toast.success("Workspace deleted!");
       queryClient.invalidateQueries({ queryKey: ["workspaces"] });
     },
-    onError: () => {
-      toast.error("Failed to create workspace!");
+    onError: (error) => {
+      toast.error(error.message);
     },
   });
 

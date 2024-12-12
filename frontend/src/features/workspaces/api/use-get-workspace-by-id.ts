@@ -10,7 +10,7 @@ export const getWorkspaceByIdQuery = async (workspaceId: string) => {
   });
 
   if (!response.ok) {
-    throw Error("Failed to fetch workspace");
+    throw Error(`Failed to fetch workspace ${workspaceId}: ${response.statusText}`);
   }
 
   const data = await response.json();

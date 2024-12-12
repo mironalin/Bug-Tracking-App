@@ -15,18 +15,18 @@ export const useResetInviteCode = () => {
       const response = await api.workspaces[":workspaceId"]["reset-invite-code"]["$post"]({ param });
 
       if (!response.ok) {
-        throw new Error("Failed to reset invite code");
+        throw new Error("Failed to reset invite code: " + response.statusText);
       }
 
       return await response.json();
     },
-    onSuccess: ({ workspace }) => {
+    onSuccess: () => {
       toast.success("Invite code reseted!");
       queryClient.invalidateQueries({ queryKey: ["workspaces"] });
       // queryClient.invalidateQueries({ queryKey: ["workspace", workspace.slug] });
     },
-    onError: () => {
-      toast.error("Failed to reset invite code!");
+    onError: (error) => {
+      toast.error(error.message);
     },
   });
 
