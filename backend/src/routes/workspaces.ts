@@ -103,6 +103,26 @@ export const workspacesRoute = new Hono()
       .where(eq(workspacesTable.slug, workspaceId));
 
     return c.json({ updatedWorkspace });
+  })
+  .delete("/:workspaceId", getSessionAndUser, async (c) => {
+    const user = c.var.user;
+    if (!user) return c.body(null, 401);
+
+    const { workspaceId } = c.req.param();
+
+    const member = await getMember({ db, workspaceId, userId: user.id });
+
+    if (!member || member.role !== MemberRole.ADMIN) {
+      return c.json({ error: "Unauthorized" }, 401);
+    }
+
+    // await db
+    //   .delete(membersTable)
+    //   .where(and(eq(membersTable.workspaceId, workspaceId), eq(membersTable.userId, user.id)));
+
+    await db.delete(workspacesTable).where(eq(workspacesTable.slug, workspaceId));
+
+    return c.json({ workspace: { slug: workspaceId } });
   });
 
 export type WorkspaceApi = typeof workspacesRoute;

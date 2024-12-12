@@ -26,7 +26,7 @@ function RouteComponent() {
     return <span>Error: {error.message}</span>;
   }
 
-  if (!data.workspace) {
+  if (!data.workspace[0]) {
     navigate({ to: `/workspaces/${workspaceId}` });
   }
 
