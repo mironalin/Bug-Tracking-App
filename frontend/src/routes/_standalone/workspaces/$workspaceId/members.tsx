@@ -23,7 +23,7 @@ function RouteComponent() {
   const { data } = useGetMembers(workspaceId);
 
   return (
-    <div className="w-full lg-max-w-xl">
+    <div className="w-full lg:max-w-xl">
       <MembersList data={data} />
     </div>
   );
