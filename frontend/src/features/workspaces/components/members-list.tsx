@@ -18,12 +18,21 @@ import { useDeleteMember } from "@/features/members/api/use-delete-member";
 import { useUpdateMember } from "@/features/members/api/use-update-member";
 import { useConfirm } from "@/hooks/use-confirm";
 
-export const MembersList = () => {
+interface ExtendedMemberTypeInterface extends MemberTypeInterface {
+  name: string;
+  email: string;
+}
+
+interface MembersListProps {
+  data: {
+    members: ExtendedMemberTypeInterface[];
+  };
+}
+
+export const MembersList = ({ data }: MembersListProps) => {
   const { workspaceId } = useParams({ strict: false });
-  const { isFetching, data } = useGetMembers(workspaceId!);
 
   const { mutate: deleteMember, isPending: isDeletingMember } = useDeleteMember();
-
   const { mutate: updateMember, isPending: isUpdatingMember } = useUpdateMember();
 
   const [ConfirmDialog, confirm] = useConfirm(
@@ -31,17 +40,6 @@ export const MembersList = () => {
     "Are you sure you want to remove this member?",
     "destructive"
   );
-
-  interface ExtendedMemberTypeInterface extends MemberTypeInterface {
-    name: string;
-    email: string;
-  }
-
-  if (isFetching) {
-    return <div>Loading...</div>;
-  }
-
-  // console.log({ data });
 
   const handleUpdateMember = (memberId: string, role: MemberRole) => {
     updateMember({ json: { role }, param: { memberId } });
@@ -109,7 +107,7 @@ export const MembersList = () => {
                 </DropdownMenuContent>
               </DropdownMenu>
             </div>
-            {index < data.members.length - 1 && <Separator className="my-2.5" />}
+            {index < data?.members.length - 1 && <Separator className="my-2.5" />}
           </Fragment>
         ))}
       </CardContent>
