@@ -3,6 +3,7 @@ import {
   selectWorkspacesSchema,
   updateWorkspacesSchema,
 } from "./db/schema/workspaces-schema.js";
+import { selectMembersSchema } from "./db/schema/members-schema.js";
 import { z } from "zod";
 
 export const createWorkspaceSchema = insertWorkspacesSchema.omit({
@@ -17,6 +18,8 @@ export const createWorkspaceSchema = insertWorkspacesSchema.omit({
 export type CreateWorkspace = z.infer<typeof createWorkspaceSchema>;
 export type UpdateWorkspace = z.infer<typeof updateWorkspacesSchema>;
 export type WorkspaceTypeInterface = z.infer<typeof selectWorkspacesSchema>;
+export type MemberTypeInterface = z.infer<typeof selectMembersSchema>;
+
 export enum MemberRole {
   ADMIN = "admin",
   MEMBER = "member",

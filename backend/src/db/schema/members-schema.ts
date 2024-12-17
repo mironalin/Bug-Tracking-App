@@ -9,6 +9,8 @@ export const members = pgTable(
   "members",
   {
     id: integer().primaryKey().generatedAlwaysAsIdentity(),
+    slug: varchar().$default(() => generateUniqueString(16)),
+
     userId: text("userId").notNull(),
     workspaceId: varchar().notNull(),
     role: rolesEnum(),
@@ -22,4 +24,18 @@ export const members = pgTable(
 
 export const insertMembersSchema = createInsertSchema(members);
 
+export const updateMembersSchema = createInsertSchema(members).pick({ role: true }).partial();
+
 export const selectMembersSchema = createSelectSchema(members);
+
+export function generateUniqueString(length: number = 12): string {
+  const characters = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+  let uniqueString = "";
+
+  for (let i = 0; i < length; i++) {
+    const randomIndex = Math.floor(Math.random() * characters.length);
+    uniqueString += characters[randomIndex];
+  }
+
+  return uniqueString;
+}

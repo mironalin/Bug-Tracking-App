@@ -6,6 +6,7 @@ import { auth } from "./lib/auth.js";
 import { workspacesRoute } from "./routes/workspaces.js";
 import { bucketRoute } from "./routes/bucketRoute.js";
 import { logger } from "hono/logger";
+import { membersRoute } from "./routes/members.js";
 
 const app = new Hono();
 
@@ -28,7 +29,8 @@ const apiRoutes = app
   .route("/auth/**", authRoute)
   .route("/me", meRoute)
   .route("/workspaces", workspacesRoute)
-  .route("/generatePresignedUrl", bucketRoute);
+  .route("/generatePresignedUrl", bucketRoute)
+  .route("/members", membersRoute);
 
 export default app;
 export type ApiRoutes = typeof apiRoutes;
