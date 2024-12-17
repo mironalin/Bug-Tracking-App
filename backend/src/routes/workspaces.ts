@@ -125,9 +125,9 @@ export const workspacesRoute = new Hono()
       return c.json({ error: "Unauthorized" }, 401);
     }
 
-    // await db
-    //   .delete(membersTable)
-    //   .where(and(eq(membersTable.workspaceId, workspaceId), eq(membersTable.userId, user.id)));
+    await db
+      .delete(membersTable)
+      .where(and(eq(membersTable.workspaceId, workspaceId), eq(membersTable.userId, user.id)));
 
     await db.delete(workspacesTable).where(eq(workspacesTable.slug, workspaceId));
 
