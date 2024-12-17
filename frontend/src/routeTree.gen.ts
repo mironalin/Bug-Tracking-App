@@ -20,6 +20,7 @@ import { Route as AuthPagesSignInImport } from './routes/_authPages/sign-in'
 import { Route as StandaloneWorkspacesCreateImport } from './routes/_standalone/workspaces/create'
 import { Route as AuthenticatedWorkspacesWorkspaceIdImport } from './routes/_authenticated/workspaces/$workspaceId'
 import { Route as StandaloneWorkspacesWorkspaceIdSettingsImport } from './routes/_standalone/workspaces/$workspaceId/settings'
+import { Route as StandaloneWorkspacesWorkspaceIdMembersImport } from './routes/_standalone/workspaces/$workspaceId/members'
 import { Route as StandaloneWorkspacesWorkspaceIdJoinInviteCodeImport } from './routes/_standalone/workspaces/$workspaceId/join.$inviteCode'
 
 // Create/Update Routes
@@ -76,6 +77,13 @@ const StandaloneWorkspacesWorkspaceIdSettingsRoute =
   StandaloneWorkspacesWorkspaceIdSettingsImport.update({
     id: '/workspaces/$workspaceId/settings',
     path: '/workspaces/$workspaceId/settings',
+    getParentRoute: () => StandaloneRoute,
+  } as any)
+
+const StandaloneWorkspacesWorkspaceIdMembersRoute =
+  StandaloneWorkspacesWorkspaceIdMembersImport.update({
+    id: '/workspaces/$workspaceId/members',
+    path: '/workspaces/$workspaceId/members',
     getParentRoute: () => StandaloneRoute,
   } as any)
 
@@ -146,6 +154,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof StandaloneWorkspacesCreateImport
       parentRoute: typeof StandaloneImport
     }
+    '/_standalone/workspaces/$workspaceId/members': {
+      id: '/_standalone/workspaces/$workspaceId/members'
+      path: '/workspaces/$workspaceId/members'
+      fullPath: '/workspaces/$workspaceId/members'
+      preLoaderRoute: typeof StandaloneWorkspacesWorkspaceIdMembersImport
+      parentRoute: typeof StandaloneImport
+    }
     '/_standalone/workspaces/$workspaceId/settings': {
       id: '/_standalone/workspaces/$workspaceId/settings'
       path: '/workspaces/$workspaceId/settings'
@@ -196,12 +211,15 @@ const AuthenticatedRouteWithChildren = AuthenticatedRoute._addFileChildren(
 
 interface StandaloneRouteChildren {
   StandaloneWorkspacesCreateRoute: typeof StandaloneWorkspacesCreateRoute
+  StandaloneWorkspacesWorkspaceIdMembersRoute: typeof StandaloneWorkspacesWorkspaceIdMembersRoute
   StandaloneWorkspacesWorkspaceIdSettingsRoute: typeof StandaloneWorkspacesWorkspaceIdSettingsRoute
   StandaloneWorkspacesWorkspaceIdJoinInviteCodeRoute: typeof StandaloneWorkspacesWorkspaceIdJoinInviteCodeRoute
 }
 
 const StandaloneRouteChildren: StandaloneRouteChildren = {
   StandaloneWorkspacesCreateRoute: StandaloneWorkspacesCreateRoute,
+  StandaloneWorkspacesWorkspaceIdMembersRoute:
+    StandaloneWorkspacesWorkspaceIdMembersRoute,
   StandaloneWorkspacesWorkspaceIdSettingsRoute:
     StandaloneWorkspacesWorkspaceIdSettingsRoute,
   StandaloneWorkspacesWorkspaceIdJoinInviteCodeRoute:
@@ -219,6 +237,7 @@ export interface FileRoutesByFullPath {
   '/': typeof AuthenticatedIndexRoute
   '/workspaces/$workspaceId': typeof AuthenticatedWorkspacesWorkspaceIdRoute
   '/workspaces/create': typeof StandaloneWorkspacesCreateRoute
+  '/workspaces/$workspaceId/members': typeof StandaloneWorkspacesWorkspaceIdMembersRoute
   '/workspaces/$workspaceId/settings': typeof StandaloneWorkspacesWorkspaceIdSettingsRoute
   '/workspaces/$workspaceId/join/$inviteCode': typeof StandaloneWorkspacesWorkspaceIdJoinInviteCodeRoute
 }
@@ -230,6 +249,7 @@ export interface FileRoutesByTo {
   '/': typeof AuthenticatedIndexRoute
   '/workspaces/$workspaceId': typeof AuthenticatedWorkspacesWorkspaceIdRoute
   '/workspaces/create': typeof StandaloneWorkspacesCreateRoute
+  '/workspaces/$workspaceId/members': typeof StandaloneWorkspacesWorkspaceIdMembersRoute
   '/workspaces/$workspaceId/settings': typeof StandaloneWorkspacesWorkspaceIdSettingsRoute
   '/workspaces/$workspaceId/join/$inviteCode': typeof StandaloneWorkspacesWorkspaceIdJoinInviteCodeRoute
 }
@@ -244,6 +264,7 @@ export interface FileRoutesById {
   '/_authenticated/': typeof AuthenticatedIndexRoute
   '/_authenticated/workspaces/$workspaceId': typeof AuthenticatedWorkspacesWorkspaceIdRoute
   '/_standalone/workspaces/create': typeof StandaloneWorkspacesCreateRoute
+  '/_standalone/workspaces/$workspaceId/members': typeof StandaloneWorkspacesWorkspaceIdMembersRoute
   '/_standalone/workspaces/$workspaceId/settings': typeof StandaloneWorkspacesWorkspaceIdSettingsRoute
   '/_standalone/workspaces/$workspaceId/join/$inviteCode': typeof StandaloneWorkspacesWorkspaceIdJoinInviteCodeRoute
 }
@@ -257,6 +278,7 @@ export interface FileRouteTypes {
     | '/'
     | '/workspaces/$workspaceId'
     | '/workspaces/create'
+    | '/workspaces/$workspaceId/members'
     | '/workspaces/$workspaceId/settings'
     | '/workspaces/$workspaceId/join/$inviteCode'
   fileRoutesByTo: FileRoutesByTo
@@ -267,6 +289,7 @@ export interface FileRouteTypes {
     | '/'
     | '/workspaces/$workspaceId'
     | '/workspaces/create'
+    | '/workspaces/$workspaceId/members'
     | '/workspaces/$workspaceId/settings'
     | '/workspaces/$workspaceId/join/$inviteCode'
   id:
@@ -279,6 +302,7 @@ export interface FileRouteTypes {
     | '/_authenticated/'
     | '/_authenticated/workspaces/$workspaceId'
     | '/_standalone/workspaces/create'
+    | '/_standalone/workspaces/$workspaceId/members'
     | '/_standalone/workspaces/$workspaceId/settings'
     | '/_standalone/workspaces/$workspaceId/join/$inviteCode'
   fileRoutesById: FileRoutesById
@@ -329,6 +353,7 @@ export const routeTree = rootRoute
       "filePath": "_standalone.tsx",
       "children": [
         "/_standalone/workspaces/create",
+        "/_standalone/workspaces/$workspaceId/members",
         "/_standalone/workspaces/$workspaceId/settings",
         "/_standalone/workspaces/$workspaceId/join/$inviteCode"
       ]
@@ -351,6 +376,10 @@ export const routeTree = rootRoute
     },
     "/_standalone/workspaces/create": {
       "filePath": "_standalone/workspaces/create.tsx",
+      "parent": "/_standalone"
+    },
+    "/_standalone/workspaces/$workspaceId/members": {
+      "filePath": "_standalone/workspaces/$workspaceId/members.tsx",
       "parent": "/_standalone"
     },
     "/_standalone/workspaces/$workspaceId/settings": {
