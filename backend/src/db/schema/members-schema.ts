@@ -10,7 +10,6 @@ export const members = pgTable(
   {
     id: integer().primaryKey().generatedAlwaysAsIdentity(),
     slug: varchar().$default(() => generateUniqueString(16)),
-
     userId: text("userId").notNull(),
     workspaceId: varchar().notNull(),
     role: rolesEnum(),
