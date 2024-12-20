@@ -22,7 +22,7 @@ export const Projects = () => {
         />
       </div>
       {data?.projects.map((project: ProjectTypeInterface) => {
-        const fullHref = `/workspaces/${workspaceId}/projects/${project.id}`;
+        const fullHref = `/workspaces/${workspaceId}/projects/${project.slug}`;
         const isActive = pathname === fullHref;
 
         return (
