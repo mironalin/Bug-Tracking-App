@@ -57,4 +57,20 @@ export const projectsRoute = new Hono()
       .then((res) => res[0]);
 
     return c.json(result);
+  })
+  .get("/:projectId", getSessionAndUser, async (c) => {
+    const user = c.var.user;
+    if (!user) return c.body(null, 401);
+
+    const { projectId } = c.req.param();
+
+    const project = (await db.select().from(projectsTable).where(eq(projectsTable.slug, projectId)))[0];
+
+    const member = await getMember({ db, workspaceId: project.workspaceId, userId: user.id });
+
+    if (!member) {
+      return c.json({ project: [] });
+    }
+
+    return c.json({ project });
   });
