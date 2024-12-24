@@ -108,9 +108,9 @@ export const EditWorkspaceForm = ({ onCancel, initialValues }: EditWorkspaceForm
             { json: finalValues, param: { workspaceId: initialValues.slug } },
             {
               onSuccess: () => {
-                // form.reset();
+                form.reset();
                 onCancel?.();
-                navigate({ to: `/workspaces/${initialValues.slug}` });
+                // navigate({ to: `/workspaces/${initialValues.slug}` });
               },
             }
           );
@@ -125,9 +125,9 @@ export const EditWorkspaceForm = ({ onCancel, initialValues }: EditWorkspaceForm
         { json: finalValues, param: { workspaceId: initialValues.slug } },
         {
           onSuccess: () => {
-            // form.reset();
+            form.reset();
             onCancel?.();
-            navigate({ to: `/workspaces/${initialValues.slug}` });
+            // navigate({ to: `/workspaces/${initialValues.slug}` });
           },
         }
       );
