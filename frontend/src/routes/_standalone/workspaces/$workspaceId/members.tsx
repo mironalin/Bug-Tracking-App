@@ -15,6 +15,7 @@ export const Route = createFileRoute("/_standalone/workspaces/$workspaceId/membe
     });
   },
   component: RouteComponent,
+  pendingMs: 300,
   pendingComponent: () => <LoaderComponent />,
 });
 
