@@ -58,9 +58,10 @@ export const CreateProjectForm = ({ onCancel }: CreateProjectFormProps) => {
           createProject(
             { json: values },
             {
-              onSuccess: () => {
+              onSuccess: (result) => {
                 form.reset();
                 onCancel?.();
+                navigate({ to: `/workspaces/${workspaceId}/projects/${result.slug}` });
               },
             }
           );
@@ -75,9 +76,10 @@ export const CreateProjectForm = ({ onCancel }: CreateProjectFormProps) => {
       createProject(
         { json: values },
         {
-          onSuccess: () => {
+          onSuccess: (result) => {
             form.reset();
             onCancel?.();
+            navigate({ to: `/workspaces/${workspaceId}/projects/${result.slug}` });
           },
         }
       );
