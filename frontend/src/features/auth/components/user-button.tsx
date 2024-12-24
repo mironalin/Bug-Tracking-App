@@ -20,7 +20,6 @@ export const UserButton = () => {
     await signOut({
       fetchOptions: {
         onSuccess: () => {
-          // window.location.reload();
           navigate({ to: "/sign-in" });
         },
         onError: (ctx: ErrorContext) => {
@@ -39,7 +38,7 @@ export const UserButton = () => {
   }
 
   if (!data?.user) {
-    return null;
+    throw new Error("User not found");
   }
 
   const { name, email } = data.user;
