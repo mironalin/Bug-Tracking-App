@@ -6,12 +6,16 @@ import { z } from "zod";
 export const workspaces = pgTable(
   "workspaces",
   {
-    id: integer().primaryKey().generatedAlwaysAsIdentity(),
-    slug: varchar().$default(() => generateUniqueString(16)),
+    id: integer().primaryKey().generatedAlwaysAsIdentity().notNull(),
+    slug: varchar()
+      .$default(() => generateUniqueString(16))
+      .notNull(),
     name: text("name").notNull(),
     userId: text("userId").notNull(),
     imageUrl: text("imageUrl"),
-    inviteCode: varchar().$default(() => generateUniqueString(10)),
+    inviteCode: varchar()
+      .$default(() => generateUniqueString(10))
+      .notNull(),
     createdAt: timestamp("createdAt").notNull().defaultNow(),
     updatedAt: timestamp("updatedAt")
       .notNull()
