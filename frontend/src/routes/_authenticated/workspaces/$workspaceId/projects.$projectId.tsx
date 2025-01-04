@@ -4,6 +4,7 @@ import { getProjectByIdQuery, useGetProjectById } from "@/features/projects/api/
 import { ProjectAvatar } from "@/features/projects/components/project-avatar";
 import { PencilIcon } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { TaskViewSwitcher } from "@/features/tasks/components/task-view-switcher";
 
 export const Route = createFileRoute("/_authenticated/workspaces/$workspaceId/projects/$projectId")({
   loader: async ({ context, params }) => {
@@ -45,6 +46,7 @@ function RouteComponent() {
           </Button>
         </div>
       </div>
+      <TaskViewSwitcher />
     </div>
   );
 }
