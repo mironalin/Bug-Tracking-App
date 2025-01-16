@@ -23,7 +23,7 @@ export const tasksRoute = new Hono()
         assigneeId: z.string().nullish(),
         status: z.nativeEnum(TaskStatus).nullish(),
         search: z.string().nullish(),
-        dueDate: z.date().nullish(),
+        dueDate: z.string().nullish(),
       })
     ),
     async (c) => {
@@ -59,7 +59,7 @@ export const tasksRoute = new Hono()
 
       if (dueDate) {
         console.log("dueDate: ", dueDate);
-        query.push(eq(tasksTable.dueDate, dueDate));
+        query.push(eq(tasksTable.dueDate, new Date(dueDate)));
       }
 
       if (search) {
