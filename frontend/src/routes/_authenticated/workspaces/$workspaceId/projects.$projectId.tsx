@@ -5,10 +5,13 @@ import { ProjectAvatar } from "@/features/projects/components/project-avatar";
 import { PencilIcon } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { TaskViewSwitcher } from "@/features/tasks/components/task-view-switcher";
+import { getTasksQuery } from "@/features/tasks/api/use-get-task";
+import { getProjectsQuery } from "@/features/projects/api/use-get-projects";
+import { getMembersQuery } from "@/features/members/api/use-get-members";
 
 export const Route = createFileRoute("/_authenticated/workspaces/$workspaceId/projects/$projectId")({
   loader: async ({ context, params }) => {
-    const { projectId } = params;
+    const { projectId, workspaceId } = params;
 
     const queryClient = context.queryClient;
 
@@ -16,10 +19,15 @@ export const Route = createFileRoute("/_authenticated/workspaces/$workspaceId/pr
       queryKey: ["project", projectId],
       queryFn: () => getProjectByIdQuery(projectId),
     });
+
+    await queryClient.prefetchQuery({
+      queryKey: ["tasks", workspaceId],
+      queryFn: () => getTasksQuery(workspaceId),
+    });
   },
   component: RouteComponent,
-  pendingMs: 300,
-  pendingComponent: () => <LoaderComponent />,
+  // pendingMs: 300,
+  // pendingComponent: () => <LoaderComponent />,
 });
 
 function RouteComponent() {
