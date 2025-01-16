@@ -15,6 +15,7 @@ import { Button } from "@/components/ui/button";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { useNavigate, useParams } from "@tanstack/react-router";
 import { insertProjectsSchema } from "@server/db/schema/projects-schema";
+
 interface CreateProjectFormProps {
   onCancel?: () => void;
 }
