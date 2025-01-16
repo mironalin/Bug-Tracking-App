@@ -40,7 +40,7 @@ export const tasksRoute = new Hono()
 
       if (!member) return c.json({ error: "Unauthorized" }, 401);
 
-      const query: SQL[] = [eq(tasksTable.workspaceId, workspaceId), desc(tasksTable.createdAt)];
+      const query: SQL[] = [eq(tasksTable.workspaceId, workspaceId)];
 
       if (projectId) {
         console.log("projectId: ", projectId);
@@ -70,7 +70,8 @@ export const tasksRoute = new Hono()
       const tasks = await db
         .select()
         .from(tasksTable)
-        .where(and(...query));
+        .where(and(...query))
+        .orderBy(desc(tasksTable.createdAt));
 
       const projectIds = tasks.map((task) => task.projectId);
       const assigneeIds = tasks.map((task) => task.assigneeId);
