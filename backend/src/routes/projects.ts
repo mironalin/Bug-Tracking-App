@@ -16,7 +16,7 @@ export const projectsRoute = new Hono()
 
     const { workspaceId } = c.req.valid("query");
 
-    const member = getMember({
+    const member = await getMember({
       db,
       userId: user.id,
       workspaceId: workspaceId,
@@ -40,7 +40,7 @@ export const projectsRoute = new Hono()
 
     console.log("name", name);
 
-    const member = getMember({
+    const member = await getMember({
       db,
       userId: user.id,
       workspaceId: workspaceId,

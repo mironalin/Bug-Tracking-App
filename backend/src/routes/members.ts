@@ -18,7 +18,7 @@ export const membersRoute = new Hono()
 
     const { workspaceId } = c.req.valid("query");
 
-    const member = getMember({
+    const member = await getMember({
       db,
       userId: user.id,
       workspaceId: workspaceId,
