@@ -20,10 +20,10 @@ export const Route = createFileRoute("/_authenticated/workspaces/$workspaceId/pr
       queryFn: () => getProjectByIdQuery(projectId),
     });
 
-    await queryClient.prefetchQuery({
-      queryKey: ["tasks", workspaceId],
-      queryFn: () => getTasksQuery(workspaceId),
-    });
+    // await queryClient.prefetchQuery({
+    //   queryKey: ["tasks", workspaceId],
+    //   queryFn: () => getTasksQuery(workspaceId),
+    // });
   },
   component: RouteComponent,
   // pendingMs: 300,
