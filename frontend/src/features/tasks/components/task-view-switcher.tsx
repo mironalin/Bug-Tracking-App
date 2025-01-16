@@ -7,8 +7,11 @@ import { useGetTasks } from "../api/use-get-task";
 import { useParams } from "@tanstack/react-router";
 import { useQueryState } from "nuqs";
 import { DataFilters } from "./data-filters";
+import { useTaskFilters } from "../hooks/use-task-filters";
 
 export const TaskViewSwitcher = () => {
+  const [{ status, assigneeId, projectId, dueDate }] = useTaskFilters();
+
   const [view, setView] = useQueryState("task-view", {
     defaultValue: "table",
   });
@@ -17,7 +20,13 @@ export const TaskViewSwitcher = () => {
 
   const { workspaceId } = useParams({ strict: false });
 
-  const { data: tasks, isLoading: isLoadingTasks } = useGetTasks({ workspaceId: workspaceId! });
+  const { data: tasks, isLoading: isLoadingTasks } = useGetTasks({
+    workspaceId: workspaceId!,
+    projectId,
+    assigneeId,
+    status,
+    dueDate,
+  });
 
   return (
     <Tabs defaultValue={view} onValueChange={setView} className="flex-1 w-full border rounded-lg">
