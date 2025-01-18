@@ -5,7 +5,7 @@ import {
 } from "./db/schema/workspaces-schema.js";
 import { selectMembersSchema } from "./db/schema/members-schema.js";
 import { insertProjectsSchema, selectProjectsSchema, updateProjectsSchema } from "./db/schema/projects-schema.js";
-import { insertTasksSchema } from "./db/schema/tasks-schema.js";
+import { insertTasksSchema, selectTasksSchema } from "./db/schema/tasks-schema.js";
 import { z } from "zod";
 
 export const createWorkspaceSchema = insertWorkspacesSchema.omit({
@@ -31,6 +31,16 @@ export const createTasksSchema = insertTasksSchema.omit({
   slug: true,
 });
 
+export const selectAssigneeSchema = selectMembersSchema.extend({
+  name: z.string(),
+  email: z.string(),
+});
+
+export const selectPopulatedTasksSchema = selectTasksSchema.extend({
+  project: selectProjectsSchema,
+  assignee: selectAssigneeSchema,
+});
+
 export type CreateWorkspace = z.infer<typeof createWorkspaceSchema>;
 export type UpdateWorkspace = z.infer<typeof updateWorkspacesSchema>;
 export type CreateProject = z.infer<typeof createProjectSchema>;
@@ -39,7 +49,8 @@ export type CreateTask = z.infer<typeof createTasksSchema>;
 export type WorkspaceTypeInterface = z.infer<typeof selectWorkspacesSchema>;
 export type MemberTypeInterface = z.infer<typeof selectMembersSchema>;
 export type ProjectTypeInterface = z.infer<typeof selectProjectsSchema>;
-
+export type TaskTypeInterface = z.infer<typeof selectTasksSchema>;
+export type PopulatedTaskTypeInterface = z.infer<typeof selectPopulatedTasksSchema>;
 export enum MemberRole {
   ADMIN = "admin",
   MEMBER = "member",
