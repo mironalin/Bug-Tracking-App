@@ -98,10 +98,11 @@ export const tasksRoute = new Hono()
       });
 
       return c.json({
-        data: {
-          ...tasks,
-          populatedTasks,
-        },
+        // data: {
+        //   ...tasks,
+        //   populatedTasks: tasks,
+        // },
+        data: populatedTasks,
       });
     }
   )
