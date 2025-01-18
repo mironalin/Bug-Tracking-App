@@ -37,7 +37,6 @@ export const CreateTaskForm = ({ onCancel, projectOptions, memberOptions }: Crea
 
   const onSubmit = async (values: z.infer<typeof createTasksSchema>) => {
     {
-      console.log("step1");
       createTask(
         { json: { ...values, workspaceId } },
         {
