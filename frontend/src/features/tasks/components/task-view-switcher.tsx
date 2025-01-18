@@ -3,7 +3,7 @@ import { Button } from "@/components/ui/button";
 import { Tabs, TabsList, TabsContent, TabsTrigger } from "@/components/ui/tabs";
 import { Loader, PlusIcon } from "lucide-react";
 import { useCreateTaskModal } from "../hooks/use-create-task-modal";
-import { useGetTasks } from "../api/use-get-task";
+import { useGetTasks } from "../api/use-get-tasks";
 import { useParams } from "@tanstack/react-router";
 import { useQueryState } from "nuqs";
 import { DataFilters } from "./data-filters";

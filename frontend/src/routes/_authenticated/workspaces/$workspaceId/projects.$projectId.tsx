@@ -5,7 +5,7 @@ import { ProjectAvatar } from "@/features/projects/components/project-avatar";
 import { PencilIcon } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { TaskViewSwitcher } from "@/features/tasks/components/task-view-switcher";
-import { getTasksQuery } from "@/features/tasks/api/use-get-task";
+import { getTasksQuery } from "@/features/tasks/api/use-get-tasks";
 import { getProjectsQuery } from "@/features/projects/api/use-get-projects";
 import { getMembersQuery } from "@/features/members/api/use-get-members";
 
