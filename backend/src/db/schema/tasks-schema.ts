@@ -47,7 +47,9 @@ export const insertTasksSchema = createInsertSchema(tasks, {
 
 export const selectTasksSchema = createSelectSchema(tasks);
 
-export const updateTasksSchema = createInsertSchema(tasks).pick({ name: true }).partial();
+export const updateTasksSchema = createInsertSchema(tasks)
+  .pick({ name: true, status: true, projectId: true, dueDate: true, assigneeId: true, description: true })
+  .partial();
 
 export function generateUniqueString(length: number = 12): string {
   const characters = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
