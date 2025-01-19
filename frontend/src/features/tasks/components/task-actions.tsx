@@ -14,7 +14,7 @@ import { useEditTaskModal } from "../hooks/use-edit-task-modal";
 interface TaskActionProps {
   id: string;
   projectId: string;
-  children: React.ReactNode;
+  children?: React.ReactNode;
 }
 
 export const TaskActions = ({ id, projectId, children }: TaskActionProps) => {
