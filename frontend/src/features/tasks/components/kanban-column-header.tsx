@@ -10,6 +10,7 @@ import {
   PlusIcon,
 } from "lucide-react";
 import { useCreateTaskModal } from "../hooks/use-create-task-modal";
+import { useParams } from "@tanstack/react-router";
 
 interface KanbanColumnHeaderProps {
   board: TaskStatus;
@@ -25,6 +26,8 @@ const statusIconMap: Record<TaskStatus, React.ReactNode> = {
 };
 
 export const KanbanColumnHeader = ({ board, taskCount }: KanbanColumnHeaderProps) => {
+  const { projectId } = useParams({ strict: false });
+
   const { open } = useCreateTaskModal();
 
   const icon = statusIconMap[board];
@@ -37,7 +40,7 @@ export const KanbanColumnHeader = ({ board, taskCount }: KanbanColumnHeaderProps
           {taskCount}
         </div>
       </div>
-      <Button onClick={() => open(board)} variant="ghost" size="icon" className="size-5">
+      <Button onClick={() => open(board, projectId)} variant="ghost" size="icon" className="size-5">
         <PlusIcon className="size-4 text-neutral-500" />
       </Button>
     </div>

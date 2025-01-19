@@ -23,9 +23,10 @@ interface CreateTaskFormProps {
   projectOptions: { slug: string; name: string; imageUrl: string }[];
   memberOptions: { slug: string; name: string }[];
   status?: TaskStatus;
+  projectId?: string;
 }
 
-export const CreateTaskForm = ({ onCancel, projectOptions, memberOptions, status }: CreateTaskFormProps) => {
+export const CreateTaskForm = ({ onCancel, projectOptions, memberOptions, status, projectId }: CreateTaskFormProps) => {
   const { workspaceId } = useParams({ strict: false });
 
   const { mutate: createTask, isPending } = useCreateTask();
@@ -35,6 +36,7 @@ export const CreateTaskForm = ({ onCancel, projectOptions, memberOptions, status
     defaultValues: {
       workspaceId,
       status: status ?? undefined,
+      projectId: projectId ?? undefined,
     },
   });
 

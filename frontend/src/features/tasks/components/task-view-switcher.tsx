@@ -23,6 +23,8 @@ interface TaskViewSwitcherProps {
 export const TaskViewSwitcher = ({ hideProjectFilter }: TaskViewSwitcherProps) => {
   const [{ status, assigneeId, projectId, dueDate }] = useTaskFilters();
 
+  const { projectId: initialProjectId } = useParams({ strict: false });
+
   const [view, setView] = useQueryState("task-view", {
     defaultValue: "table",
   });
@@ -35,7 +37,7 @@ export const TaskViewSwitcher = ({ hideProjectFilter }: TaskViewSwitcherProps) =
 
   const { data: tasks, isLoading: isLoadingTasks } = useGetTasks({
     workspaceId: workspaceId!,
-    projectId,
+    projectId: initialProjectId || projectId,
     assigneeId,
     status,
     dueDate,
@@ -60,7 +62,7 @@ export const TaskViewSwitcher = ({ hideProjectFilter }: TaskViewSwitcherProps) =
               Calendar
             </TabsTrigger>
           </TabsList>
-          <Button onClick={() => open()} size="sm" className="w-full lg:w-auto">
+          <Button onClick={() => open(undefined, initialProjectId)} size="sm" className="w-full lg:w-auto">
             <PlusIcon className="size-4" />
             New
           </Button>

@@ -1,7 +1,7 @@
 import { useGetProjects } from "@/features/projects/api/use-get-projects";
 import { useGetMembers } from "@/features/members/api/use-get-members";
 import { useParams } from "@tanstack/react-router";
-import { ProjectTypeInterface } from "@server/sharedTypes";
+import { ProjectTypeInterface, TaskStatus } from "@server/sharedTypes";
 import { Card, CardContent } from "@/components/ui/card";
 import { Loader } from "lucide-react";
 import { CreateTaskForm } from "./create-task-form";
@@ -13,7 +13,7 @@ interface CreateTaskFormWrapperProps {
 
 export const CreateTaskFormWrapper = ({ onCancel }: CreateTaskFormWrapperProps) => {
   const { workspaceId } = useParams({ strict: false });
-  const { status } = useCreateTaskModal();
+  const { status, projectId } = useCreateTaskModal();
 
   const { data: projects, isLoading: isLoadingProjects } = useGetProjects(workspaceId!);
   const { data: members, isLoading: isLoadingMembers } = useGetMembers(workspaceId!);
@@ -41,5 +41,13 @@ export const CreateTaskFormWrapper = ({ onCancel }: CreateTaskFormWrapperProps) 
     );
   }
 
-  return <CreateTaskForm onCancel={onCancel} projectOptions={projectOptions} memberOptions={memberOptions} status={status} />;
+  return (
+    <CreateTaskForm
+      onCancel={onCancel}
+      projectOptions={projectOptions}
+      memberOptions={memberOptions}
+      status={status as TaskStatus}
+      projectId={projectId as string}
+    />
+  );
 };

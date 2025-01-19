@@ -7,13 +7,16 @@ export const useCreateTaskModal = () => {
     parseAsBoolean.withDefault(false).withOptions({ clearOnDefault: true })
   );
   const [status, setStatus] = useQueryState("task-status", parseAsString);
+  const [projectId, setProjectId] = useQueryState("project-id", parseAsString);
 
-  const open = (status?: TaskStatus) => {
+  const open = (status?: TaskStatus, projectId?: string) => {
     setStatus(status ?? null);
+    setProjectId(projectId ?? null);
     setIsOpen(true);
   };
   const close = () => {
     setIsOpen(false);
+    setProjectId(null);
     setStatus(null);
   };
 
@@ -22,6 +25,7 @@ export const useCreateTaskModal = () => {
     open,
     close,
     status,
+    projectId,
     setIsOpen,
   };
 };
