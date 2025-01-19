@@ -54,7 +54,7 @@ function RouteComponent() {
           </Button>
         </div>
       </div>
-      <TaskViewSwitcher />
+      <TaskViewSwitcher hideProjectFilter />
     </div>
   );
 }
