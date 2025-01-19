@@ -5,6 +5,7 @@ import { ProjectTypeInterface } from "@server/sharedTypes";
 import { Card, CardContent } from "@/components/ui/card";
 import { Loader } from "lucide-react";
 import { CreateTaskForm } from "./create-task-form";
+import { useCreateTaskModal } from "../hooks/use-create-task-modal";
 
 interface CreateTaskFormWrapperProps {
   onCancel: () => void;
@@ -12,6 +13,7 @@ interface CreateTaskFormWrapperProps {
 
 export const CreateTaskFormWrapper = ({ onCancel }: CreateTaskFormWrapperProps) => {
   const { workspaceId } = useParams({ strict: false });
+  const { status } = useCreateTaskModal();
 
   const { data: projects, isLoading: isLoadingProjects } = useGetProjects(workspaceId!);
   const { data: members, isLoading: isLoadingMembers } = useGetMembers(workspaceId!);
@@ -39,5 +41,5 @@ export const CreateTaskFormWrapper = ({ onCancel }: CreateTaskFormWrapperProps) 
     );
   }
 
-  return <CreateTaskForm onCancel={onCancel} projectOptions={projectOptions} memberOptions={memberOptions} />;
+  return <CreateTaskForm onCancel={onCancel} projectOptions={projectOptions} memberOptions={memberOptions} status={status} />;
 };

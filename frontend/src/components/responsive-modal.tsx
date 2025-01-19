@@ -1,9 +1,6 @@
 import { useMedia } from "react-use";
-
 import { Dialog, DialogContent, DialogTitle } from "./ui/dialog";
-
 import { Drawer, DrawerContent, DrawerTitle } from "./ui/drawer";
-
 import * as VisuallyHidden from "@radix-ui/react-visually-hidden";
 
 interface ResponsiveModalProps {

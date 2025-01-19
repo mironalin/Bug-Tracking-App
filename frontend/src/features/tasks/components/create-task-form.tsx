@@ -1,3 +1,4 @@
+import { useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { cn } from "@/lib/utils";
 import { z } from "zod";
@@ -21,9 +22,10 @@ interface CreateTaskFormProps {
   onCancel?: () => void;
   projectOptions: { slug: string; name: string; imageUrl: string }[];
   memberOptions: { slug: string; name: string }[];
+  status?: TaskStatus;
 }
 
-export const CreateTaskForm = ({ onCancel, projectOptions, memberOptions }: CreateTaskFormProps) => {
+export const CreateTaskForm = ({ onCancel, projectOptions, memberOptions, status }: CreateTaskFormProps) => {
   const { workspaceId } = useParams({ strict: false });
 
   const { mutate: createTask, isPending } = useCreateTask();
@@ -32,6 +34,7 @@ export const CreateTaskForm = ({ onCancel, projectOptions, memberOptions }: Crea
     resolver: zodResolver(insertTasksSchema.omit({ workspaceId: true })),
     defaultValues: {
       workspaceId,
+      status: status ?? undefined,
     },
   });
 
@@ -48,8 +51,6 @@ export const CreateTaskForm = ({ onCancel, projectOptions, memberOptions }: Crea
       );
     }
   };
-
-  // const onInvalid = (errors) => console.error(errors);
 
   return (
     <Card className="w-full h-full border-none shadow-none">
