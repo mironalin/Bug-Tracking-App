@@ -21,7 +21,9 @@ import { Route as StandaloneWorkspacesCreateImport } from './routes/_standalone/
 import { Route as AuthenticatedWorkspacesWorkspaceIdIndexImport } from './routes/_authenticated/workspaces/$workspaceId/index'
 import { Route as StandaloneWorkspacesWorkspaceIdSettingsImport } from './routes/_standalone/workspaces/$workspaceId/settings'
 import { Route as StandaloneWorkspacesWorkspaceIdMembersImport } from './routes/_standalone/workspaces/$workspaceId/members'
+import { Route as AuthenticatedWorkspacesWorkspaceIdTasksIndexImport } from './routes/_authenticated/workspaces/$workspaceId/tasks/index'
 import { Route as StandaloneWorkspacesWorkspaceIdJoinInviteCodeImport } from './routes/_standalone/workspaces/$workspaceId/join.$inviteCode'
+import { Route as AuthenticatedWorkspacesWorkspaceIdTasksTaskIdImport } from './routes/_authenticated/workspaces/$workspaceId/tasks/$taskId'
 import { Route as AuthenticatedWorkspacesWorkspaceIdProjectsProjectIdImport } from './routes/_authenticated/workspaces/$workspaceId/projects.$projectId'
 import { Route as StandaloneWorkspacesWorkspaceIdProjectsProjectIdSettingsImport } from './routes/_standalone/workspaces/$workspaceId/projects/$projectId.settings'
 
@@ -89,11 +91,25 @@ const StandaloneWorkspacesWorkspaceIdMembersRoute =
     getParentRoute: () => StandaloneRoute,
   } as any)
 
+const AuthenticatedWorkspacesWorkspaceIdTasksIndexRoute =
+  AuthenticatedWorkspacesWorkspaceIdTasksIndexImport.update({
+    id: '/workspaces/$workspaceId/tasks/',
+    path: '/workspaces/$workspaceId/tasks/',
+    getParentRoute: () => AuthenticatedRoute,
+  } as any)
+
 const StandaloneWorkspacesWorkspaceIdJoinInviteCodeRoute =
   StandaloneWorkspacesWorkspaceIdJoinInviteCodeImport.update({
     id: '/workspaces/$workspaceId/join/$inviteCode',
     path: '/workspaces/$workspaceId/join/$inviteCode',
     getParentRoute: () => StandaloneRoute,
+  } as any)
+
+const AuthenticatedWorkspacesWorkspaceIdTasksTaskIdRoute =
+  AuthenticatedWorkspacesWorkspaceIdTasksTaskIdImport.update({
+    id: '/workspaces/$workspaceId/tasks/$taskId',
+    path: '/workspaces/$workspaceId/tasks/$taskId',
+    getParentRoute: () => AuthenticatedRoute,
   } as any)
 
 const AuthenticatedWorkspacesWorkspaceIdProjectsProjectIdRoute =
@@ -191,12 +207,26 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedWorkspacesWorkspaceIdProjectsProjectIdImport
       parentRoute: typeof AuthenticatedImport
     }
+    '/_authenticated/workspaces/$workspaceId/tasks/$taskId': {
+      id: '/_authenticated/workspaces/$workspaceId/tasks/$taskId'
+      path: '/workspaces/$workspaceId/tasks/$taskId'
+      fullPath: '/workspaces/$workspaceId/tasks/$taskId'
+      preLoaderRoute: typeof AuthenticatedWorkspacesWorkspaceIdTasksTaskIdImport
+      parentRoute: typeof AuthenticatedImport
+    }
     '/_standalone/workspaces/$workspaceId/join/$inviteCode': {
       id: '/_standalone/workspaces/$workspaceId/join/$inviteCode'
       path: '/workspaces/$workspaceId/join/$inviteCode'
       fullPath: '/workspaces/$workspaceId/join/$inviteCode'
       preLoaderRoute: typeof StandaloneWorkspacesWorkspaceIdJoinInviteCodeImport
       parentRoute: typeof StandaloneImport
+    }
+    '/_authenticated/workspaces/$workspaceId/tasks/': {
+      id: '/_authenticated/workspaces/$workspaceId/tasks/'
+      path: '/workspaces/$workspaceId/tasks'
+      fullPath: '/workspaces/$workspaceId/tasks'
+      preLoaderRoute: typeof AuthenticatedWorkspacesWorkspaceIdTasksIndexImport
+      parentRoute: typeof AuthenticatedImport
     }
     '/_standalone/workspaces/$workspaceId/projects/$projectId/settings': {
       id: '/_standalone/workspaces/$workspaceId/projects/$projectId/settings'
@@ -228,6 +258,8 @@ interface AuthenticatedRouteChildren {
   AuthenticatedIndexRoute: typeof AuthenticatedIndexRoute
   AuthenticatedWorkspacesWorkspaceIdIndexRoute: typeof AuthenticatedWorkspacesWorkspaceIdIndexRoute
   AuthenticatedWorkspacesWorkspaceIdProjectsProjectIdRoute: typeof AuthenticatedWorkspacesWorkspaceIdProjectsProjectIdRoute
+  AuthenticatedWorkspacesWorkspaceIdTasksTaskIdRoute: typeof AuthenticatedWorkspacesWorkspaceIdTasksTaskIdRoute
+  AuthenticatedWorkspacesWorkspaceIdTasksIndexRoute: typeof AuthenticatedWorkspacesWorkspaceIdTasksIndexRoute
 }
 
 const AuthenticatedRouteChildren: AuthenticatedRouteChildren = {
@@ -236,6 +268,10 @@ const AuthenticatedRouteChildren: AuthenticatedRouteChildren = {
     AuthenticatedWorkspacesWorkspaceIdIndexRoute,
   AuthenticatedWorkspacesWorkspaceIdProjectsProjectIdRoute:
     AuthenticatedWorkspacesWorkspaceIdProjectsProjectIdRoute,
+  AuthenticatedWorkspacesWorkspaceIdTasksTaskIdRoute:
+    AuthenticatedWorkspacesWorkspaceIdTasksTaskIdRoute,
+  AuthenticatedWorkspacesWorkspaceIdTasksIndexRoute:
+    AuthenticatedWorkspacesWorkspaceIdTasksIndexRoute,
 }
 
 const AuthenticatedRouteWithChildren = AuthenticatedRoute._addFileChildren(
@@ -276,7 +312,9 @@ export interface FileRoutesByFullPath {
   '/workspaces/$workspaceId/settings': typeof StandaloneWorkspacesWorkspaceIdSettingsRoute
   '/workspaces/$workspaceId': typeof AuthenticatedWorkspacesWorkspaceIdIndexRoute
   '/workspaces/$workspaceId/projects/$projectId': typeof AuthenticatedWorkspacesWorkspaceIdProjectsProjectIdRoute
+  '/workspaces/$workspaceId/tasks/$taskId': typeof AuthenticatedWorkspacesWorkspaceIdTasksTaskIdRoute
   '/workspaces/$workspaceId/join/$inviteCode': typeof StandaloneWorkspacesWorkspaceIdJoinInviteCodeRoute
+  '/workspaces/$workspaceId/tasks': typeof AuthenticatedWorkspacesWorkspaceIdTasksIndexRoute
   '/workspaces/$workspaceId/projects/$projectId/settings': typeof StandaloneWorkspacesWorkspaceIdProjectsProjectIdSettingsRoute
 }
 
@@ -290,7 +328,9 @@ export interface FileRoutesByTo {
   '/workspaces/$workspaceId/settings': typeof StandaloneWorkspacesWorkspaceIdSettingsRoute
   '/workspaces/$workspaceId': typeof AuthenticatedWorkspacesWorkspaceIdIndexRoute
   '/workspaces/$workspaceId/projects/$projectId': typeof AuthenticatedWorkspacesWorkspaceIdProjectsProjectIdRoute
+  '/workspaces/$workspaceId/tasks/$taskId': typeof AuthenticatedWorkspacesWorkspaceIdTasksTaskIdRoute
   '/workspaces/$workspaceId/join/$inviteCode': typeof StandaloneWorkspacesWorkspaceIdJoinInviteCodeRoute
+  '/workspaces/$workspaceId/tasks': typeof AuthenticatedWorkspacesWorkspaceIdTasksIndexRoute
   '/workspaces/$workspaceId/projects/$projectId/settings': typeof StandaloneWorkspacesWorkspaceIdProjectsProjectIdSettingsRoute
 }
 
@@ -307,7 +347,9 @@ export interface FileRoutesById {
   '/_standalone/workspaces/$workspaceId/settings': typeof StandaloneWorkspacesWorkspaceIdSettingsRoute
   '/_authenticated/workspaces/$workspaceId/': typeof AuthenticatedWorkspacesWorkspaceIdIndexRoute
   '/_authenticated/workspaces/$workspaceId/projects/$projectId': typeof AuthenticatedWorkspacesWorkspaceIdProjectsProjectIdRoute
+  '/_authenticated/workspaces/$workspaceId/tasks/$taskId': typeof AuthenticatedWorkspacesWorkspaceIdTasksTaskIdRoute
   '/_standalone/workspaces/$workspaceId/join/$inviteCode': typeof StandaloneWorkspacesWorkspaceIdJoinInviteCodeRoute
+  '/_authenticated/workspaces/$workspaceId/tasks/': typeof AuthenticatedWorkspacesWorkspaceIdTasksIndexRoute
   '/_standalone/workspaces/$workspaceId/projects/$projectId/settings': typeof StandaloneWorkspacesWorkspaceIdProjectsProjectIdSettingsRoute
 }
 
@@ -323,7 +365,9 @@ export interface FileRouteTypes {
     | '/workspaces/$workspaceId/settings'
     | '/workspaces/$workspaceId'
     | '/workspaces/$workspaceId/projects/$projectId'
+    | '/workspaces/$workspaceId/tasks/$taskId'
     | '/workspaces/$workspaceId/join/$inviteCode'
+    | '/workspaces/$workspaceId/tasks'
     | '/workspaces/$workspaceId/projects/$projectId/settings'
   fileRoutesByTo: FileRoutesByTo
   to:
@@ -336,7 +380,9 @@ export interface FileRouteTypes {
     | '/workspaces/$workspaceId/settings'
     | '/workspaces/$workspaceId'
     | '/workspaces/$workspaceId/projects/$projectId'
+    | '/workspaces/$workspaceId/tasks/$taskId'
     | '/workspaces/$workspaceId/join/$inviteCode'
+    | '/workspaces/$workspaceId/tasks'
     | '/workspaces/$workspaceId/projects/$projectId/settings'
   id:
     | '__root__'
@@ -351,7 +397,9 @@ export interface FileRouteTypes {
     | '/_standalone/workspaces/$workspaceId/settings'
     | '/_authenticated/workspaces/$workspaceId/'
     | '/_authenticated/workspaces/$workspaceId/projects/$projectId'
+    | '/_authenticated/workspaces/$workspaceId/tasks/$taskId'
     | '/_standalone/workspaces/$workspaceId/join/$inviteCode'
+    | '/_authenticated/workspaces/$workspaceId/tasks/'
     | '/_standalone/workspaces/$workspaceId/projects/$projectId/settings'
   fileRoutesById: FileRoutesById
 }
@@ -395,7 +443,9 @@ export const routeTree = rootRoute
       "children": [
         "/_authenticated/",
         "/_authenticated/workspaces/$workspaceId/",
-        "/_authenticated/workspaces/$workspaceId/projects/$projectId"
+        "/_authenticated/workspaces/$workspaceId/projects/$projectId",
+        "/_authenticated/workspaces/$workspaceId/tasks/$taskId",
+        "/_authenticated/workspaces/$workspaceId/tasks/"
       ]
     },
     "/_standalone": {
@@ -440,9 +490,17 @@ export const routeTree = rootRoute
       "filePath": "_authenticated/workspaces/$workspaceId/projects.$projectId.tsx",
       "parent": "/_authenticated"
     },
+    "/_authenticated/workspaces/$workspaceId/tasks/$taskId": {
+      "filePath": "_authenticated/workspaces/$workspaceId/tasks/$taskId.tsx",
+      "parent": "/_authenticated"
+    },
     "/_standalone/workspaces/$workspaceId/join/$inviteCode": {
       "filePath": "_standalone/workspaces/$workspaceId/join.$inviteCode.tsx",
       "parent": "/_standalone"
+    },
+    "/_authenticated/workspaces/$workspaceId/tasks/": {
+      "filePath": "_authenticated/workspaces/$workspaceId/tasks/index.tsx",
+      "parent": "/_authenticated"
     },
     "/_standalone/workspaces/$workspaceId/projects/$projectId/settings": {
       "filePath": "_standalone/workspaces/$workspaceId/projects/$projectId.settings.tsx",
