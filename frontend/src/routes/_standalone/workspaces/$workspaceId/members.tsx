@@ -1,7 +1,7 @@
 import { MembersList } from "@/features/workspaces/components/members-list";
 import { createFileRoute } from "@tanstack/react-router";
 import { getMembersQuery, useGetMembers } from "@/features/members/api/use-get-members";
-import { LoaderComponent } from "@/components/loader-component";
+import { PageLoader } from "@/components/page-loader";
 
 export const Route = createFileRoute("/_standalone/workspaces/$workspaceId/members")({
   loader: async ({ context, params }) => {
@@ -16,7 +16,7 @@ export const Route = createFileRoute("/_standalone/workspaces/$workspaceId/membe
   },
   component: RouteComponent,
   pendingMs: 300,
-  pendingComponent: () => <LoaderComponent />,
+  pendingComponent: () => <PageLoader />,
 });
 
 function RouteComponent() {

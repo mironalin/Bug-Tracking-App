@@ -1,5 +1,5 @@
 import { createFileRoute, Link, Outlet, redirect } from "@tanstack/react-router";
-import { LoaderComponent } from "@/components/loader-component";
+import { PageLoader } from "@/components/page-loader";
 import { UserButton } from "@/features/auth/components/user-button";
 import { userQueryOptions } from "@/features/auth/api/authApi";
 
@@ -11,7 +11,7 @@ export const Route = createFileRoute("/_standalone")({
       throw redirect({ to: "/sign-in" });
     }
   },
-  pendingComponent: () => <LoaderComponent />,
+  pendingComponent: () => <PageLoader />,
   component: RouteComponent,
 });
 

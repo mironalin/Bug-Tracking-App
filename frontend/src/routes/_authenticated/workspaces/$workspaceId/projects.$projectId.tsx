@@ -1,5 +1,5 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { LoaderComponent } from "@/components/loader-component";
+import { PageLoader } from "@/components/page-loader";
 import { getProjectByIdQuery, useGetProjectById } from "@/features/projects/api/use-get-project-by-id";
 import { ProjectAvatar } from "@/features/projects/components/project-avatar";
 import { PencilIcon } from "lucide-react";
@@ -27,7 +27,7 @@ export const Route = createFileRoute("/_authenticated/workspaces/$workspaceId/pr
   },
   component: RouteComponent,
   // pendingMs: 300,
-  // pendingComponent: () => <LoaderComponent />,
+  // pendingComponent: () => <PageLoader />,
 });
 
 function RouteComponent() {

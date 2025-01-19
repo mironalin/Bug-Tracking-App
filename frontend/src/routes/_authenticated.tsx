@@ -2,7 +2,7 @@ import { createFileRoute, Outlet, redirect } from "@tanstack/react-router";
 import { userQueryOptions } from "@/features/auth/api/authApi";
 import { Sidebar } from "@/components/sidebar";
 import { Navbar } from "@/components/navbar";
-import { LoaderComponent } from "@/components/loader-component";
+import { PageLoader } from "@/components/page-loader";
 import { CreateWorkspaceModal } from "@/features/workspaces/components/create-workspace-modal";
 import { CreateProjectModal } from "@/features/projects/components/create-project-modal";
 import { CreateTaskModal } from "@/features/tasks/components/create-task-modal";
@@ -16,7 +16,7 @@ export const Route = createFileRoute("/_authenticated")({
       throw redirect({ to: "/sign-in" });
     }
   },
-  pendingComponent: () => <LoaderComponent />,
+  pendingComponent: () => <PageLoader />,
   component: RouteComponent,
 });
 

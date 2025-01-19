@@ -1,5 +1,5 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { LoaderComponent } from "@/components/loader-component";
+import { PageLoader } from "@/components/page-loader";
 import { getProjectByIdQuery, useGetProjectById } from "@/features/projects/api/use-get-project-by-id";
 import { EditProjectForm } from "@/features/projects/components/edit-project-form";
 
@@ -16,7 +16,7 @@ export const Route = createFileRoute("/_standalone/workspaces/$workspaceId/proje
   },
   component: RouteComponent,
   pendingMs: 300,
-  pendingComponent: () => <LoaderComponent />,
+  pendingComponent: () => <PageLoader />,
 });
 
 function RouteComponent() {

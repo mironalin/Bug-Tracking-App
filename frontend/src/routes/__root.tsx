@@ -1,7 +1,7 @@
 import { QueryClient } from "@tanstack/react-query";
 import { createRootRouteWithContext, Outlet } from "@tanstack/react-router";
 import { Toaster } from "@/components/ui/sonner";
-import { ErrorPage } from "@/components/error";
+import { ErrorPage } from "@/components/error-page";
 
 type RouterContext = {
   queryClient: QueryClient;
