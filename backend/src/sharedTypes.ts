@@ -49,6 +49,7 @@ export type CreateTask = z.infer<typeof createTasksSchema>;
 export type WorkspaceTypeInterface = z.infer<typeof selectWorkspacesSchema>;
 export type MemberTypeInterface = z.infer<typeof selectMembersSchema>;
 export type ProjectTypeInterface = z.infer<typeof selectProjectsSchema>;
+export type AssigneeTypeInterface = z.infer<typeof selectAssigneeSchema>;
 export type TaskTypeInterface = z.infer<typeof selectTasksSchema>;
 export type PopulatedTaskTypeInterface = z.infer<typeof selectPopulatedTasksSchema>;
 export enum MemberRole {
