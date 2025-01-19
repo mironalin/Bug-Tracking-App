@@ -30,7 +30,7 @@ function RouteComponent() {
 
   return (
     <div className="w-full lg:max-w-xl">
-      <EditProjectForm key={data.project.updatedAt} initialValues={data.project} />
+      <EditProjectForm key={data.updatedAt} initialValues={data} />
     </div>
   );
 }

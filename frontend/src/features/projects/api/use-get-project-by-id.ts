@@ -12,7 +12,7 @@ export const getProjectByIdQuery = async (projectId: string) => {
     throw Error(`Failed to fetch project ${projectId}: ${response.statusText}`);
   }
 
-  const data = await response.json();
+  const { data } = await response.json();
 
   return data;
 };

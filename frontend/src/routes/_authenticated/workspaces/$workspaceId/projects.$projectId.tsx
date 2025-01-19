@@ -8,6 +8,8 @@ import { TaskViewSwitcher } from "@/features/tasks/components/task-view-switcher
 import { getTasksQuery } from "@/features/tasks/api/use-get-tasks";
 import { getProjectsQuery } from "@/features/projects/api/use-get-projects";
 import { getMembersQuery } from "@/features/members/api/use-get-members";
+import { getProjectAnalytics, useGetProjectAnalytics } from "@/features/projects/api/use-get-project-analytics";
+import { Analytics } from "@/components/analytics";
 
 export const Route = createFileRoute("/_authenticated/workspaces/$workspaceId/projects/$projectId")({
   loader: async ({ context, params }) => {
@@ -20,10 +22,10 @@ export const Route = createFileRoute("/_authenticated/workspaces/$workspaceId/pr
       queryFn: () => getProjectByIdQuery(projectId),
     });
 
-    // await queryClient.prefetchQuery({
-    //   queryKey: ["tasks", workspaceId],
-    //   queryFn: () => getTasksQuery(workspaceId),
-    // });
+    await queryClient.prefetchQuery({
+      queryKey: ["project-analytics", projectId],
+      queryFn: () => getProjectAnalytics(projectId),
+    });
   },
   component: RouteComponent,
   // pendingMs: 300,
@@ -32,28 +34,34 @@ export const Route = createFileRoute("/_authenticated/workspaces/$workspaceId/pr
 
 function RouteComponent() {
   const { projectId } = Route.useParams();
-  const { data } = useGetProjectById(projectId);
+  const { data: project } = useGetProjectById(projectId);
+  const { data: analytics } = useGetProjectAnalytics(projectId);
 
-  if (!data) {
+  if (!project) {
     throw new Error("Project not found");
+  }
+
+  if (!analytics) {
+    throw new Error("Project analytics not found");
   }
 
   return (
     <div className="flex flex-col gap-y-4">
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-x-2">
-          <ProjectAvatar name={data.project.name} image={data.project.imageUrl} className="size-8" />
-          <p className="text-lg font-semibold">{data.project.name}</p>
+          <ProjectAvatar name={project.name} image={project.imageUrl} className="size-8" />
+          <p className="text-lg font-semibold">{project.name}</p>
         </div>
         <div>
           <Button variant="secondary" size="sm" asChild>
-            <Link to={`/workspaces/${data.project.workspaceId}/projects/${data.project.slug}/settings`}>
+            <Link to={`/workspaces/${project.workspaceId}/projects/${project.slug}/settings`}>
               <PencilIcon className="size-4" />
               Edit Project
             </Link>
           </Button>
         </div>
       </div>
+      {analytics ? <Analytics data={analytics} /> : null}
       <TaskViewSwitcher hideProjectFilter />
     </div>
   );
