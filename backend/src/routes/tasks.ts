@@ -7,7 +7,7 @@ import { members as membersTable } from "../db/schema/members-schema.js";
 import { user as userTable } from "../db/schema/auth-schema.js";
 import { getMember } from "../lib/utils.js";
 import { db } from "../db/index.js";
-import { and, desc, eq, ilike, inArray, SQL } from "drizzle-orm";
+import { and, desc, eq, ilike, inArray, max, SQL } from "drizzle-orm";
 import { z } from "zod";
 import { TaskStatus } from "../sharedTypes.js";
 
@@ -257,4 +257,63 @@ export const tasksRoute = new Hono()
         slug: taskId,
       },
     });
-  });
+  })
+  .post(
+    "/bulk-update",
+    getSessionAndUser,
+    zValidator(
+      "json",
+      z.object({
+        tasks: z.array(
+          z.object({
+            slug: z.string(),
+            status: z.nativeEnum(TaskStatus),
+            position: z.number().int().positive().min(1000).max(1_000_000),
+          })
+        ),
+      })
+    ),
+    async (c) => {
+      const user = c.var.user;
+      if (!user) return c.body(null, 401);
+
+      const { tasks } = c.req.valid("json");
+
+      const tasksToUpdate = await db
+        .select()
+        .from(tasksTable)
+        .where(
+          inArray(
+            tasksTable.slug,
+            tasks.map((task) => task.slug)
+          )
+        );
+
+      const workspaceIds = new Set(tasksToUpdate.map((task) => task.workspaceId));
+      if (workspaceIds.size !== 1) {
+        return c.json({ error: "Tasks must belong to the same workspace" }, 400);
+      }
+
+      const workspaceId = workspaceIds.values().next().value;
+
+      if (!workspaceId) return c.json({ error: "Workspace ID is required" }, 400);
+
+      const member = await getMember({ db, userId: user.id, workspaceId: workspaceId });
+
+      if (!member) return c.json({ error: "Unauthorized" }, 401);
+
+      const updatedTasks = await Promise.all(
+        tasks.map(async (task) => {
+          const { slug, status, position } = task;
+          return db
+            .update(tasksTable)
+            .set({ status, position })
+            .where(eq(tasksTable.slug, slug))
+            .returning()
+            .then((res) => res[0]);
+        })
+      );
+
+      return c.json({ data: updatedTasks });
+    }
+  );
