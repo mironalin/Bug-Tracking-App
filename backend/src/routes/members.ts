@@ -6,7 +6,7 @@ import { user as userTable } from "../db/schema/auth-schema.js";
 import { zValidator } from "@hono/zod-validator";
 import { z } from "zod";
 import { getMember } from "../lib/utils.js";
-import { eq } from "drizzle-orm";
+import { eq, and } from "drizzle-orm";
 import { MemberRole } from "../sharedTypes.js";
 
 import { updateMembersSchema } from "../db/schema/members-schema.js";
@@ -39,7 +39,19 @@ export const membersRoute = new Hono()
       })
     );
 
-    return c.json({ members: populatedMembers });
+    return c.json({ data: populatedMembers });
+  })
+  .get("/:workspaceId", getSessionAndUser, async (c) => {
+    const user = c.var.user;
+    if (!user) return c.body(null, 401);
+
+    const { workspaceId } = c.req.param();
+
+    const member = await getMember({ db, userId: user.id, workspaceId });
+
+    if (!member) return c.json({ error: "Member not found" }, 404);
+
+    return c.json({ data: { ...member, name: user.name, email: user.email } });
   })
   .delete("/:memberId", getSessionAndUser, async (c) => {
     const user = c.var.user;
