@@ -1,11 +1,10 @@
-import { useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { cn } from "@/lib/utils";
 import { z } from "zod";
 
 import { useCreateTask } from "../api/use-create-task";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { CreateTask, createTasksSchema, TaskStatus } from "@server/sharedTypes";
+import { CreateTask, createTasksSchema, MemberRole, TaskStatus } from "@server/sharedTypes";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
@@ -17,25 +16,37 @@ import { insertTasksSchema } from "@server/db/schema/tasks-schema";
 import { DatePicker } from "@/components/date-picker";
 import { MemberAvatar } from "@/features/members/components/member-avatar";
 import { ProjectAvatar } from "@/features/projects/components/project-avatar";
+import { useGetMe } from "@/features/members/api/use-get-me";
 
 interface CreateTaskFormProps {
   onCancel?: () => void;
   projectOptions: { slug: string; name: string; imageUrl: string }[];
   memberOptions: { slug: string; name: string }[];
   status?: TaskStatus;
+  assigneeId?: string;
   projectId?: string;
 }
 
-export const CreateTaskForm = ({ onCancel, projectOptions, memberOptions, status, projectId }: CreateTaskFormProps) => {
-  const { workspaceId } = useParams({ strict: false });
+export const CreateTaskForm = ({
+  onCancel,
+  projectOptions,
+  memberOptions,
+  status,
+  assigneeId,
+  projectId,
+}: CreateTaskFormProps) => {
+  const { workspaceId } = useParams({ strict: false }) as { workspaceId: string };
 
   const { mutate: createTask, isPending } = useCreateTask();
+
+  const { data: currentMember } = useGetMe({ workspaceId });
 
   const form = useForm<CreateTask>({
     resolver: zodResolver(insertTasksSchema.omit({ workspaceId: true })),
     defaultValues: {
       workspaceId,
       status: status ?? undefined,
+      assigneeId: assigneeId ?? undefined,
       projectId: projectId ?? undefined,
     },
   });
@@ -53,6 +64,10 @@ export const CreateTaskForm = ({ onCancel, projectOptions, memberOptions, status
       );
     }
   };
+
+  if (!currentMember) {
+    return null;
+  }
 
   return (
     <Card className="w-full h-full border-none shadow-none">
@@ -106,14 +121,23 @@ export const CreateTaskForm = ({ onCancel, projectOptions, memberOptions, status
                       </FormControl>
                       <FormMessage />
                       <SelectContent>
-                        {memberOptions.map((member) => (
-                          <SelectItem key={member.slug} value={member.slug}>
+                        {currentMember.role === MemberRole.MEMBER ? (
+                          <SelectItem key={currentMember.slug} value={currentMember.slug}>
                             <div className="flex items-center gap-x-2">
-                              <MemberAvatar className="size-6" name={member.name} />
-                              {member.name}
+                              <MemberAvatar className="size-6" name={currentMember.name} />
+                              {currentMember.name}
                             </div>
                           </SelectItem>
-                        ))}
+                        ) : (
+                          memberOptions.map((member) => (
+                            <SelectItem key={member.slug} value={member.slug}>
+                              <div className="flex items-center gap-x-2">
+                                <MemberAvatar className="size-6" name={member.name} />
+                                {member.name}
+                              </div>
+                            </SelectItem>
+                          ))
+                        )}
                       </SelectContent>
                     </Select>
                   </FormItem>

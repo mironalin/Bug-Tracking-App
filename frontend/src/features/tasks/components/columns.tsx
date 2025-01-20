@@ -102,9 +102,12 @@ export const columns: ColumnDef<PopulatedTaskTypeInterface>[] = [
     cell: ({ row }) => {
       const id = row.original.slug;
       const projectId = row.original.projectId;
+      const assigneeId = row.original.assigneeId;
+
+      console.log(id);
 
       return (
-        <TaskActions id={id} projectId={projectId}>
+        <TaskActions id={id} projectId={projectId} assigneeId={assigneeId}>
           <Button variant="ghost" className="size-8 p-0">
             <MoreVertical className="size-4" />
           </Button>

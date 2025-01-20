@@ -13,18 +13,18 @@ interface CreateTaskFormWrapperProps {
 
 export const CreateTaskFormWrapper = ({ onCancel }: CreateTaskFormWrapperProps) => {
   const { workspaceId } = useParams({ strict: false });
-  const { status, projectId } = useCreateTaskModal();
+  const { status, assigneeId, projectId } = useCreateTaskModal();
 
   const { data: projects, isLoading: isLoadingProjects } = useGetProjects(workspaceId!);
   const { data: members, isLoading: isLoadingMembers } = useGetMembers(workspaceId!);
 
-  const projectOptions = projects?.projects.map((project: ProjectTypeInterface) => ({
+  const projectOptions = projects?.map((project: ProjectTypeInterface) => ({
     slug: project.slug,
     name: project.name,
     imageUrl: project.imageUrl,
   }));
 
-  const memberOptions = members?.members.map((project: ProjectTypeInterface) => ({
+  const memberOptions = members?.map((project: ProjectTypeInterface) => ({
     slug: project.slug,
     name: project.name,
   }));
@@ -47,6 +47,7 @@ export const CreateTaskFormWrapper = ({ onCancel }: CreateTaskFormWrapperProps) 
       projectOptions={projectOptions}
       memberOptions={memberOptions}
       status={status as TaskStatus}
+      assigneeId={assigneeId as string}
       projectId={projectId as string}
     />
   );
