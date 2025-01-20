@@ -1,33 +1,36 @@
 import { useGetMembers } from "@/features/members/api/use-get-members";
 import { useGetProjects } from "@/features/projects/api/use-get-projects";
+import { useGetTasks } from "@/features/tasks/api/use-get-tasks";
 import { ProjectTypeInterface, TaskStatus } from "@server/sharedTypes";
 import { useParams } from "@tanstack/react-router";
 
 import { Select, SelectItem, SelectContent, SelectSeparator, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { DatePicker } from "@/components/date-picker";
-import { FolderIcon, ListChecksIcon, UserIcon } from "lucide-react";
+import { FilterX, FolderIcon, ListChecksIcon, RefreshCwIcon, UserIcon } from "lucide-react";
 import { useTaskFilters } from "../hooks/use-task-filters";
 import { Button } from "@/components/ui/button";
 import { useState } from "react";
 
 interface DataFiltersProps {
   hideProjectFilter?: boolean;
+  hideAssigneeFilter?: boolean;
+  handleRefetch?: () => void;
 }
 
-export const DataFilters = ({ hideProjectFilter }: DataFiltersProps) => {
-  const { workspaceId } = useParams({ strict: false });
+export const DataFilters = ({ hideProjectFilter, hideAssigneeFilter, handleRefetch }: DataFiltersProps) => {
+  const { workspaceId } = useParams({ strict: false }) as { workspaceId: string };
 
   const { data: projects, isLoading: isLoadingProjects } = useGetProjects(workspaceId!);
   const { data: members, isLoading: isLoadingMembers } = useGetMembers(workspaceId!);
 
   const isLoading = isLoadingProjects || isLoadingMembers;
 
-  const projectOptions = projects?.projects.map((project: ProjectTypeInterface) => ({
+  const projectOptions = projects?.map((project: ProjectTypeInterface) => ({
     value: project.slug,
     name: project.name,
   }));
 
-  const memberOptions = members?.members.map((member: ProjectTypeInterface) => ({
+  const memberOptions = members?.map((member: ProjectTypeInterface) => ({
     value: member.slug,
     name: member.name,
   }));
@@ -43,6 +46,7 @@ export const DataFilters = ({ hideProjectFilter }: DataFiltersProps) => {
   }
 
   const [{ status, assigneeId, projectId, dueDate }, setFilters] = useTaskFilters();
+  const { refetch: refetchTasks } = useGetTasks({ workspaceId });
 
   const onStatusChange = (value: string) => {
     if (value === "all") {
@@ -103,30 +107,32 @@ export const DataFilters = ({ hideProjectFilter }: DataFiltersProps) => {
           <SelectItem value={TaskStatus.DONE}>Done</SelectItem>
         </SelectContent>
       </Select>
-      <Select
-        defaultValue={assigneeId ?? undefined}
-        onValueChange={(value) => {
-          onAssigneeChange(value);
-        }}
-      >
-        <SelectTrigger className="w-full lg:w-auto h-8">
-          <div className="flex items-center pr-2">
-            <div className="flex flex-row gap-2 items-center">
-              <UserIcon className="size-4" />
-              <SelectValue placeholder="All assignees" />
+      {!hideAssigneeFilter && (
+        <Select
+          defaultValue={assigneeId ?? undefined}
+          onValueChange={(value) => {
+            onAssigneeChange(value);
+          }}
+        >
+          <SelectTrigger className="w-full lg:w-auto h-8">
+            <div className="flex items-center pr-2">
+              <div className="flex flex-row gap-2 items-center">
+                <UserIcon className="size-4" />
+                <SelectValue placeholder="All assignees" />
+              </div>
             </div>
-          </div>
-        </SelectTrigger>
-        <SelectContent>
-          <SelectItem value="all">All assignees</SelectItem>
-          <SelectSeparator />
-          {memberOptions?.map((member: Member) => (
-            <SelectItem key={member.value} value={member.value}>
-              {member.name}
-            </SelectItem>
-          ))}
-        </SelectContent>
-      </Select>
+          </SelectTrigger>
+          <SelectContent>
+            <SelectItem value="all">All assignees</SelectItem>
+            <SelectSeparator />
+            {memberOptions?.map((member: Member) => (
+              <SelectItem key={member.value} value={member.value}>
+                {member.name}
+              </SelectItem>
+            ))}
+          </SelectContent>
+        </Select>
+      )}
       {!hideProjectFilter && (
         <Select
           defaultValue={projectId ?? undefined}
@@ -161,9 +167,16 @@ export const DataFilters = ({ hideProjectFilter }: DataFiltersProps) => {
           setFilters({ dueDate: date ? date.toISOString() : null });
         }}
       />
-      <Button onClick={() => resetSelect()} variant="muted" className="w-full lg:w-auto h-8">
-        Clear Filters
-      </Button>
+      <div className="flex flex-row gap-2">
+        <Button onClick={() => resetSelect()} variant="muted" className="w-full lg:w-auto h-8">
+          <FilterX className="size-4" />
+          Clear Filters
+        </Button>
+        <Button onClick={handleRefetch} variant="muted" className="w-full lg:w-auto h-8">
+          <RefreshCwIcon className="size-4" />
+          Refresh
+        </Button>
+      </div>
     </div>
   );
 };
