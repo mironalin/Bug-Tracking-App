@@ -17,23 +17,24 @@ import {
 import { useDeleteMember } from "@/features/members/api/use-delete-member";
 import { useUpdateMember } from "@/features/members/api/use-update-member";
 import { useConfirm } from "@/hooks/use-confirm";
+import { useGetMe } from "@/features/members/api/use-get-me";
 
-interface ExtendedMemberTypeInterface extends MemberTypeInterface {
+export interface ExtendedMemberTypeInterface extends MemberTypeInterface {
   name: string;
   email: string;
 }
 
 interface MembersListProps {
-  data: {
-    members: ExtendedMemberTypeInterface[];
-  };
+  data: ExtendedMemberTypeInterface[];
 }
 
 export const MembersList = ({ data }: MembersListProps) => {
-  const { workspaceId } = useParams({ strict: false });
+  const { workspaceId } = useParams({ strict: false }) as { workspaceId: string };
 
   const { mutate: deleteMember, isPending: isDeletingMember } = useDeleteMember();
   const { mutate: updateMember, isPending: isUpdatingMember } = useUpdateMember();
+
+  const { data: currentMember } = useGetMe({ workspaceId });
 
   const [ConfirmDialog, confirm] = useConfirm(
     "Remove member",
@@ -52,6 +53,16 @@ export const MembersList = ({ data }: MembersListProps) => {
     deleteMember({ param: { memberId } });
   };
 
+  if (!currentMember) {
+    return null;
+  }
+
+  const isCurrentUserAdmin = currentMember.role === MemberRole.ADMIN;
+
+  const isCurrentUser = (member: ExtendedMemberTypeInterface) => member.slug === currentMember.slug;
+
+  console.log(isCurrentUser(currentMember));
+
   return (
     <Card className="w-full h-full border-none shadow-none">
       <ConfirmDialog />
@@ -68,7 +79,7 @@ export const MembersList = ({ data }: MembersListProps) => {
         <DottedSeparator />
       </div>
       <CardContent className="p-7">
-        {data?.members.map((member: ExtendedMemberTypeInterface, index: number) => (
+        {data?.map((member, index: number) => (
           <Fragment key={member.id}>
             <div className="flex items-center gap-2">
               <MemberAvatar className="size-10" fallbackClassName="text-lg" name={member.name} />
@@ -85,21 +96,21 @@ export const MembersList = ({ data }: MembersListProps) => {
                 <DropdownMenuContent side="bottom" align="end">
                   <DropdownMenuItem
                     className="font-medium"
-                    disabled={isUpdatingMember}
+                    disabled={isUpdatingMember || !isCurrentUserAdmin}
                     onClick={() => handleUpdateMember(member.slug!, MemberRole.ADMIN)}
                   >
                     Set as Administrator
                   </DropdownMenuItem>
                   <DropdownMenuItem
                     className="font-medium"
-                    disabled={isUpdatingMember}
+                    disabled={isUpdatingMember || !isCurrentUserAdmin}
                     onClick={() => handleUpdateMember(member.slug!, MemberRole.MEMBER)}
                   >
                     Set as Member
                   </DropdownMenuItem>
                   <DropdownMenuItem
                     className="font-medium text-amber-700"
-                    disabled={isDeletingMember}
+                    disabled={isDeletingMember || (!isCurrentUser(member) && !isCurrentUserAdmin)}
                     onClick={() => handleDeleteMember(member.slug!)}
                   >
                     Remove {member.name}
@@ -107,7 +118,7 @@ export const MembersList = ({ data }: MembersListProps) => {
                 </DropdownMenuContent>
               </DropdownMenu>
             </div>
-            {index < data?.members.length - 1 && <Separator className="my-2.5" />}
+            {index < data?.length - 1 && <Separator className="my-2.5" />}
           </Fragment>
         ))}
       </CardContent>
