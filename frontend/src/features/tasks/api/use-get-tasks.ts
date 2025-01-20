@@ -27,7 +27,7 @@ export const getTasksQuery = async ({ workspaceId, projectId, status, search, as
     throw Error("Failed to fetch tasks: " + response.statusText);
   }
 
-  const data = await response.json();
+  const { data } = await response.json();
 
   return data;
 };
