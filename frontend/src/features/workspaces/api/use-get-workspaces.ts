@@ -9,7 +9,7 @@ export const getWorkspacesQuery = async () => {
     throw Error("Failed to fetch workspaces: " + response.statusText);
   }
 
-  const data = await response.json();
+  const { data } = await response.json();
 
   return data;
 };
