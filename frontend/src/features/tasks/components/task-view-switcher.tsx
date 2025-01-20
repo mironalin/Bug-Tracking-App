@@ -8,44 +8,59 @@ import { useParams } from "@tanstack/react-router";
 import { useQueryState } from "nuqs";
 import { DataFilters } from "./data-filters";
 import { useTaskFilters } from "../hooks/use-task-filters";
-import { DataTable } from "./data-table";
-import { columns } from "./columns";
 import { DataKanban } from "./data-kanban";
 import { useCallback } from "react";
 import { TaskStatus } from "@server/sharedTypes";
 import { useBulkUpdateTasks } from "../api/use-bulk-update-tasks";
 import { DataCalendar } from "./data-calendar";
+import { PageLoader } from "@/components/page-loader";
+import { DataTable } from "./data-table";
+import { columns } from "./columns";
+import { QueryClient } from "@tanstack/react-query";
 
 interface TaskViewSwitcherProps {
   hideProjectFilter?: boolean;
+  hideAssigneeFilter?: boolean;
+  currentAssigneeId?: string;
+  showAllTasks?: boolean;
 }
 
-export const TaskViewSwitcher = ({ hideProjectFilter }: TaskViewSwitcherProps) => {
+export const TaskViewSwitcher = ({
+  hideProjectFilter,
+  hideAssigneeFilter,
+  currentAssigneeId,
+  showAllTasks,
+}: TaskViewSwitcherProps) => {
+  const { workspaceId, projectId: initialProjectId } = useParams({ strict: false });
   const [{ status, assigneeId, projectId, dueDate }] = useTaskFilters();
-
-  const { projectId: initialProjectId } = useParams({ strict: false });
 
   const [view, setView] = useQueryState("task-view", {
     defaultValue: "table",
   });
 
+  const onKanbanChange = useCallback((tasks: { slug: string; status: TaskStatus; position: number }[]) => {
+    bulkUpdate({ json: { tasks } });
+  }, []);
+
   const { open } = useCreateTaskModal();
 
   const { mutate: bulkUpdate } = useBulkUpdateTasks();
 
-  const { workspaceId } = useParams({ strict: false });
-
-  const { data: tasks, isLoading: isLoadingTasks } = useGetTasks({
+  const {
+    data: tasks,
+    isLoading: isLoadingTasks,
+    refetch: taskRefetch,
+  } = useGetTasks({
     workspaceId: workspaceId!,
     projectId: initialProjectId || projectId,
-    assigneeId,
+    assigneeId: showAllTasks ? assigneeId : currentAssigneeId,
     status,
     dueDate,
   });
 
-  const onKanbanChange = useCallback((tasks: { slug: string; status: TaskStatus; position: number }[]) => {
-    bulkUpdate({ json: { tasks } });
-  }, []);
+  if (isLoadingTasks) {
+    return <PageLoader />;
+  }
 
   return (
     <Tabs defaultValue={view} onValueChange={setView} className="flex-1 w-full border rounded-lg">
@@ -62,13 +77,26 @@ export const TaskViewSwitcher = ({ hideProjectFilter }: TaskViewSwitcherProps) =
               Calendar
             </TabsTrigger>
           </TabsList>
-          <Button onClick={() => open(undefined, initialProjectId)} size="sm" className="w-full lg:w-auto">
+          <Button
+            onClick={() =>
+              open({
+                projectId: initialProjectId,
+                currentAssigneeId: currentAssigneeId,
+              })
+            }
+            size="sm"
+            className="w-full lg:w-auto"
+          >
             <PlusIcon className="size-4" />
             New
           </Button>
         </div>
         <DottedSeparator className="my-4" />
-        <DataFilters hideProjectFilter={hideProjectFilter} />
+        <DataFilters
+          hideProjectFilter={hideProjectFilter}
+          hideAssigneeFilter={hideAssigneeFilter}
+          handleRefetch={taskRefetch}
+        />
         <DottedSeparator className="my-4" />
         {isLoadingTasks ? (
           <div className="w-full border rounded-lg h-[200px] flex flex-col items-center justify-center">
@@ -77,13 +105,13 @@ export const TaskViewSwitcher = ({ hideProjectFilter }: TaskViewSwitcherProps) =
         ) : (
           <>
             <TabsContent value="table" className="mt-0">
-              <DataTable columns={columns} data={tasks.data} />
+              <DataTable columns={columns} data={tasks} />
             </TabsContent>
             <TabsContent value="kanban" className="mt-0">
-              <DataKanban data={tasks.data} onChange={onKanbanChange} />
+              <DataKanban data={tasks} onChange={onKanbanChange} />
             </TabsContent>
             <TabsContent value="calendar" className="mt-0 pb-4 h-full">
-              <DataCalendar data={tasks.data} />
+              <DataCalendar data={tasks} />
             </TabsContent>
           </>
         )}
