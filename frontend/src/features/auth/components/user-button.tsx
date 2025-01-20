@@ -12,8 +12,13 @@ import { signOut } from "@/lib/auth-client";
 import { toast } from "sonner";
 import { ErrorContext } from "@better-fetch/fetch";
 import { useNavigate } from "@tanstack/react-router";
+import { MemberRole } from "@server/sharedTypes";
 
-export const UserButton = () => {
+interface UserButtonProps {
+  role?: MemberRole;
+}
+
+export const UserButton = ({ role }: UserButtonProps) => {
   const navigate = useNavigate();
   const { data, isPending } = useSession();
   const handleSignOut = async () => {
@@ -47,8 +52,9 @@ export const UserButton = () => {
 
   return (
     <DropdownMenu modal={false}>
-      <DropdownMenuTrigger className="outline-none relative">
-        <Avatar className="size-10 hover:opacity-75 transition border border-neutral-300">
+      <DropdownMenuTrigger className="outline-none relative flex flex-row items-center cursor-pointer hover:opacity-75 transition border p-2 rounded-lg">
+        {role ? <p className="text-muted-foreground text-sm font-medium mr-2 capitalize">{role}</p> : null}
+        <Avatar className="size-10  border border-neutral-300">
           <AvatarFallback className="bg-neutral-200 font-medium text-neutral-500 flex items-center justify-center">
             {avatarFallback}
           </AvatarFallback>

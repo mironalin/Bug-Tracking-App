@@ -3,7 +3,7 @@ import { MobileSidebar } from "./mobile-sidebar";
 
 import { useLocation, useParams } from "@tanstack/react-router";
 import { Button } from "./ui/button";
-import { useGetMe } from "@/features/members/api/user-get-me";
+import { useGetMe } from "@/features/members/api/use-get-me";
 
 const pathnameMap = {
   tasks: {
