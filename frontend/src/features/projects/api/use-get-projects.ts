@@ -9,7 +9,7 @@ export const getProjectsQuery = async (workspaceId: string) => {
     throw Error("Failed to fetch projects: " + response.statusText);
   }
 
-  const data = await response.json();
+  const { data } = await response.json();
 
   return data;
 };

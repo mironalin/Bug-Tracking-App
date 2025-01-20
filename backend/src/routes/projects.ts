@@ -34,7 +34,7 @@ export const projectsRoute = new Hono()
       .where(eq(projectsTable.workspaceId, workspaceId))
       .orderBy(desc(projectsTable.createdAt));
 
-    return c.json({ projects });
+    return c.json({ data: projects });
   })
   .post("/", getSessionAndUser, zValidator("json", insertProjectsSchema), async (c) => {
     const user = c.var.user;
@@ -123,6 +123,8 @@ export const projectsRoute = new Hono()
     }
 
     await db.delete(projectsTable).where(eq(projectsTable.slug, projectId));
+
+    await db.delete(tasksTable).where(eq(tasksTable.projectId, projectId));
 
     return c.json({ project: { slug: projectId } });
   })
