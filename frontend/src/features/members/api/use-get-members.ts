@@ -9,7 +9,7 @@ export const getMembersQuery = async (workspaceId: string) => {
     throw Error("Failed to fetch members: " + response.statusText);
   }
 
-  const data = await response.json();
+  const { data } = await response.json();
 
   return data;
 };
