@@ -21,7 +21,7 @@ export const Projects = () => {
           className="size-5 text-neutral-500 cursor-pointer hover:opacity-75 transition"
         />
       </div>
-      {data?.projects.map((project: ProjectTypeInterface) => {
+      {data?.map((project: ProjectTypeInterface) => {
         const fullHref = `/workspaces/${workspaceId}/projects/${project.slug}`;
         const isActive = pathname === fullHref;
 
