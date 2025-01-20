@@ -20,13 +20,13 @@ export const EditTaskFormWrapper = ({ onCancel, slug }: EditTaskFormWrapperProps
   const { data: projects, isLoading: isLoadingProjects } = useGetProjects(workspaceId!);
   const { data: members, isLoading: isLoadingMembers } = useGetMembers(workspaceId!);
 
-  const projectOptions = projects?.projects.map((project: ProjectTypeInterface) => ({
+  const projectOptions = projects?.map((project: ProjectTypeInterface) => ({
     slug: project.slug,
     name: project.name,
     imageUrl: project.imageUrl,
   }));
 
-  const memberOptions = members?.members.map((project: ProjectTypeInterface) => ({
+  const memberOptions = members?.map((project: ProjectTypeInterface) => ({
     slug: project.slug,
     name: project.name,
   }));
