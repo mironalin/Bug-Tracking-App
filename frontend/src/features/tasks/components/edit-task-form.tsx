@@ -23,6 +23,8 @@ import { DatePicker } from "@/components/date-picker";
 import { MemberAvatar } from "@/features/members/components/member-avatar";
 import { ProjectAvatar } from "@/features/projects/components/project-avatar";
 import { useUpdateTask } from "../api/use-update-task";
+import { useGetMe } from "@/features/members/api/use-get-me";
+import { MemberRole } from "@server/sharedTypes";
 
 interface EditTaskFormProps {
   onCancel?: () => void;
@@ -32,7 +34,11 @@ interface EditTaskFormProps {
 }
 
 export const EditTaskForm = ({ onCancel, projectOptions, memberOptions, initialValues }: EditTaskFormProps) => {
+  const { workspaceId } = useParams({ strict: false }) as { workspaceId: string };
+
   const { mutate: updateTask, isPending } = useUpdateTask();
+
+  const { data: currentMember } = useGetMe({ workspaceId });
 
   const form = useForm<z.infer<typeof insertTasksSchema>>({
     resolver: zodResolver(insertTasksSchema.omit({ workspaceId: true, description: true })),
@@ -55,6 +61,10 @@ export const EditTaskForm = ({ onCancel, projectOptions, memberOptions, initialV
       );
     }
   };
+
+  if (!currentMember) {
+    return null;
+  }
 
   return (
     <Card className="w-full h-full border-none shadow-none">
@@ -108,14 +118,23 @@ export const EditTaskForm = ({ onCancel, projectOptions, memberOptions, initialV
                       </FormControl>
                       <FormMessage />
                       <SelectContent>
-                        {memberOptions.map((member) => (
-                          <SelectItem key={member.slug} value={member.slug}>
+                        {currentMember.role === MemberRole.MEMBER ? (
+                          <SelectItem key={currentMember.slug} value={currentMember.slug}>
                             <div className="flex items-center gap-x-2">
-                              <MemberAvatar className="size-6" name={member.name} />
-                              {member.name}
+                              <MemberAvatar className="size-6" name={currentMember.name} />
+                              {currentMember.name}
                             </div>
                           </SelectItem>
-                        ))}
+                        ) : (
+                          memberOptions.map((member) => (
+                            <SelectItem key={member.slug} value={member.slug}>
+                              <div className="flex items-center gap-x-2">
+                                <MemberAvatar className="size-6" name={member.name} />
+                                {member.name}
+                              </div>
+                            </SelectItem>
+                          ))
+                        )}
                       </SelectContent>
                     </Select>
                   </FormItem>
