@@ -11,6 +11,7 @@ import {
 } from "lucide-react";
 import { useCreateTaskModal } from "../hooks/use-create-task-modal";
 import { useParams } from "@tanstack/react-router";
+import { useGetMe } from "@/features/members/api/use-get-me";
 
 interface KanbanColumnHeaderProps {
   board: TaskStatus;
@@ -26,7 +27,13 @@ const statusIconMap: Record<TaskStatus, React.ReactNode> = {
 };
 
 export const KanbanColumnHeader = ({ board, taskCount }: KanbanColumnHeaderProps) => {
-  const { projectId } = useParams({ strict: false });
+  const { workspaceId, projectId } = useParams({ strict: false }) as { workspaceId: string; projectId: string };
+
+  const { data: currentMember } = useGetMe({ workspaceId });
+
+  if (!currentMember) {
+    return null;
+  }
 
   const { open } = useCreateTaskModal();
 
@@ -40,7 +47,12 @@ export const KanbanColumnHeader = ({ board, taskCount }: KanbanColumnHeaderProps
           {taskCount}
         </div>
       </div>
-      <Button onClick={() => open(board, projectId)} variant="ghost" size="icon" className="size-5">
+      <Button
+        onClick={() => open({ status: board, currentAssigneeId: currentMember.slug, projectId })}
+        variant="ghost"
+        size="icon"
+        className="size-5"
+      >
         <PlusIcon className="size-4 text-neutral-500" />
       </Button>
     </div>
